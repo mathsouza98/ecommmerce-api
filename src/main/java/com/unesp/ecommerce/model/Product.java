@@ -1,5 +1,6 @@
 package com.unesp.ecommerce.model;
 
+import org.springframework.context.annotation.Configuration;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -18,6 +19,9 @@ public class Product {
         this.category = category;
         this.categoryByPrice = categoryByPrice;
         this.price = price;
+    }
+    public String getId() {
+        return id;
     }
 
     public String getName() {
