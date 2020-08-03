@@ -1,6 +1,5 @@
 package com.unesp.ecommerce.model;
 
-import org.springframework.context.annotation.Configuration;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -11,15 +10,44 @@ public class Product {
     String id;
     String name;
     String category;
-    String categoryByPrice;
     String price;
+    String brand;
+    long stockQuantity;
+    long totalVisualization;
 
-    public Product(String name, String category, String categoryByPrice, String price) {
+    public Product(String name, String category, String price, String brand, long stockQuantity, long totalVisualization) {
         this.name = name;
         this.category = category;
-        this.categoryByPrice = categoryByPrice;
         this.price = price;
+        this.brand = brand;
+        this.stockQuantity = stockQuantity;
+        this.totalVisualization = totalVisualization;
     }
+
+    public String getBrand() {
+        return brand;
+    }
+
+    public void setBrand(String brand) {
+        this.brand = brand;
+    }
+
+    public long getStockQuantity() {
+        return stockQuantity;
+    }
+
+    public void setStockQuantity(long stockQuantity) {
+        this.stockQuantity = stockQuantity;
+    }
+
+    public long getTotalVisualization() {
+        return totalVisualization;
+    }
+
+    public void setTotalVisualization(long totalVisualization) {
+        this.totalVisualization = totalVisualization;
+    }
+
     public String getId() {
         return id;
     }
@@ -38,14 +66,6 @@ public class Product {
 
     public void setCategory(String category) {
         this.category = category;
-    }
-
-    public String getCategoryByPrice() {
-        return categoryByPrice;
-    }
-
-    public void setCategoryByPrice(String categoryByPrice) {
-        this.categoryByPrice = categoryByPrice;
     }
 
     public String getPrice() {
