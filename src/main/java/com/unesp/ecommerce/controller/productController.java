@@ -4,6 +4,7 @@ import com.unesp.ecommerce.model.Product;
 import com.unesp.ecommerce.services.ProductService;
 import com.unesp.ecommerce.services.UserHistoryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,9 +33,35 @@ public class productController {
         return productService.saveProduct(name, category, price, brand, stockQuantity);
     }
 
+    @PutMapping("/update-product/{id}")
+    @PostAuthorize("hasRole('MODERATOR') or hasRole('ADMIN')")
+    public boolean updateProduct(@PathVariable String id, @RequestBody Product product) {
+        boolean update = false;
+
+        Optional<Product> productUpdate = productService.getProductById(id);
+
+        if(productUpdate.isPresent()) {
+
+            Product _productToBeUpdated = productUpdate.get();
+
+            _productToBeUpdated.setName(product.getName());
+            _productToBeUpdated.setCategory(product.getCategory());
+            _productToBeUpdated.setPrice(product.getPrice());
+            _productToBeUpdated.setBrand(product.getBrand());
+            _productToBeUpdated.setStockQuantity(product.getStockQuantity());
+
+            Product productUpdated = productService.updateProduct(_productToBeUpdated);
+
+            if(productUpdated != null) {
+                update = true;
+            }
+        }
+        return update;
+    }
+
     @GetMapping("/get-product/{id}")
     public Optional<Product> listProductById(@PathVariable String id, @RequestHeader("Authorization") String authorization) {
-        userHistoryService.updateUserHistory(id, authorization);
+        //userHistoryService.updateUserHistory(id, authorization);
 
         return productService.getProductById(id);
     }

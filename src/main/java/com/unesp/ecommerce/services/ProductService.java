@@ -3,6 +3,8 @@ package com.unesp.ecommerce.services;
 import com.unesp.ecommerce.model.Product;
 import com.unesp.ecommerce.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -28,16 +30,12 @@ public class ProductService {
 
     public Optional<Product> getProductById(String id) { return productRepository.findById(id); }
 
-    public Product updateProduct(String id, String name, String category, String price, String brand, Long stockQuantity, Long totalVisualization) {
-        Product productToBeUpdated = productRepository.findById(id).get();
+    public Product updateProduct(Product product) {
+       Product persistedProduct = null;
 
-        productToBeUpdated.setName(name);
-        productToBeUpdated.setCategory(category);
-        productToBeUpdated.setPrice(price);
-        productToBeUpdated.setBrand(brand);
-        productToBeUpdated.setStockQuantity(stockQuantity);
-        productToBeUpdated.setTotalVisualization(totalVisualization);
-
-        return productRepository.save(productToBeUpdated);
+       if(productRepository != null) {
+           persistedProduct = productRepository.save(product);
+       }
+       return persistedProduct;
     }
 }
