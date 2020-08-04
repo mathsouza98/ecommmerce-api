@@ -25,12 +25,15 @@ public class productController {
         String name = productToBeInserted.getName();
         String category = productToBeInserted.getCategory();
         String price = productToBeInserted.getPrice();
+        String brand = productToBeInserted.getBrand();
+        Long stockQuantity = productToBeInserted.getStockQuantity();
+        Long totalVisualization = productToBeInserted.getTotalVisualization();
 
-        return productService.saveProduct(name, category, price);
+        return productService.saveProduct(name, category, price, brand, stockQuantity);
     }
 
     @GetMapping("/get-product/{id}")
-    public Optional<Product> listProduct(@PathVariable String id, @RequestHeader("Authorization") String authorization) {
+    public Optional<Product> listProductById(@PathVariable String id, @RequestHeader("Authorization") String authorization) {
         userHistoryService.updateUserHistory(id, authorization);
 
         return productService.getProductById(id);

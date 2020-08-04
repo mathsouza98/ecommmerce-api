@@ -15,13 +15,13 @@ public class Product {
     long stockQuantity;
     long totalVisualization;
 
-    public Product(String name, String category, String price, String brand, long stockQuantity, long totalVisualization) {
+    public Product(String name, String category, String price, String brand, long stockQuantity) {
         this.name = name;
         this.category = category;
         this.price = price;
         this.brand = brand;
         this.stockQuantity = stockQuantity;
-        this.totalVisualization = totalVisualization;
+        this.totalVisualization = 0;
     }
 
     public String getBrand() {

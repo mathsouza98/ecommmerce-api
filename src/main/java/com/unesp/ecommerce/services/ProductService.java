@@ -14,8 +14,8 @@ public class ProductService {
     @Autowired
     private ProductRepository productRepository;
 
-    public Product saveProduct(String name, String category, String price, String brand, Long stockQuantity, Long totalVisualization) {
-        return productRepository.save(new Product(name, category, price, brand, stockQuantity, totalVisualization));
+    public Product saveProduct(String name, String category, String price, String brand, Long stockQuantity) {
+        return productRepository.save(new Product(name, category, price, brand, stockQuantity));
     }
 
     public List<Product> getAllProducts() {
@@ -26,10 +26,10 @@ public class ProductService {
         return productRepository.findByName(name);
     }
 
-    public Product getProductById(String id) { return productRepository.findById(id); }
+    public Optional<Product> getProductById(String id) { return productRepository.findById(id); }
 
-    public Product updateProduct(long id, String name, String category, String categoryByPrice, String price, String brand, Long stockQuantity, Long totalVisualization) {
-        Product productToBeUpdated = productRepository.findById(id);
+    public Product updateProduct(String id, String name, String category, String price, String brand, Long stockQuantity, Long totalVisualization) {
+        Product productToBeUpdated = productRepository.findById(id).get();
 
         productToBeUpdated.setName(name);
         productToBeUpdated.setCategory(category);

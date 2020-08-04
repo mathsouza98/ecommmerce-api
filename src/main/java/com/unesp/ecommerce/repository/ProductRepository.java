@@ -10,5 +10,4 @@ import java.util.List;
 public interface ProductRepository extends MongoRepository<Product, String> {
 
     List<Product> findByName(String name);
-    Product findById(long id);
 }
