@@ -3,6 +3,7 @@ package com.unesp.ecommerce.controller;
 import com.unesp.ecommerce.model.Product;
 import com.unesp.ecommerce.services.ProductService;
 import com.unesp.ecommerce.services.UserHistoryService;
+import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PostAuthorize;
@@ -62,6 +63,8 @@ public class productController {
     @GetMapping("/get-product/{id}")
     public Optional<Product> listProductById(@PathVariable String id, @RequestHeader("Authorization") String authorization) {
         //userHistoryService.updateUserHistory(id, authorization);
+
+        productService.incrementProductTotalVisualization(id);
 
         return productService.getProductById(id);
     }

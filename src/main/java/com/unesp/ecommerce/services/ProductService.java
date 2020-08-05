@@ -38,4 +38,18 @@ public class ProductService {
        }
        return persistedProduct;
     }
+
+    public void incrementProductTotalVisualization(String id) {
+        long totalVisualization;
+        Optional<Product> product = productRepository.findById(id);
+
+        if(product.isPresent()) {
+            Product productToUpdate = product.get();
+            totalVisualization = productToUpdate.getTotalVisualization();
+
+            productToUpdate.setTotalVisualization(totalVisualization + 1);
+
+            productRepository.save(productToUpdate);
+        }
+    }
 }
