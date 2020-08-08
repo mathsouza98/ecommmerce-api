@@ -1,27 +1,23 @@
 package com.unesp.ecommerce.services;
 
-import com.unesp.ecommerce.model.Product;
-import com.unesp.ecommerce.repository.ProductRepository;
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.unesp.ecommerce.model.History;
+import com.unesp.ecommerce.repository.HistoryRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-
+@Service
 public class UserHistoryService {
-    
-    private ProductRepository productRepository;
-        
-    public void updateUserHistory(String id, String authorization) {
-        Product product = productRepository.findById(id).get();
-        product.setTotalVisualization(product.getTotalVisualization() + 1);
 
-        JSONObject jo = new JSONObject();
-        try {
-            jo.put(authorization, id);
-        } catch (JSONException e) {
-            e.printStackTrace();
+    @Autowired
+    HistoryRepository historyRepository;
+
+    public boolean saveHistory(String productId) {
+
+        History history = historyRepository.save(new History(productId, 1));
+
+        if (history.getProductId() != null) {
+            return true;
         }
-        System.out.println(jo);
+        return false;
     }
 }

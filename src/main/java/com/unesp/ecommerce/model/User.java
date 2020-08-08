@@ -1,6 +1,7 @@
 package com.unesp.ecommerce.model;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.springframework.data.annotation.Id;
@@ -25,9 +26,6 @@ public class User {
 
     @DBRef
     private Set<Role> roles = new HashSet<>();
-
-    public User() {
-    }
 
     public User(String username, String password) {
         this.username = username;

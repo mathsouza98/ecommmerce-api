@@ -1,11 +1,10 @@
 package com.unesp.ecommerce.controller;
 
+import com.unesp.ecommerce.model.History;
 import com.unesp.ecommerce.model.Product;
 import com.unesp.ecommerce.services.ProductService;
 import com.unesp.ecommerce.services.UserHistoryService;
-import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,7 +14,7 @@ import java.util.Optional;
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RequestMapping(value = "/api")
-public class productController {
+public class ProductController {
 
     @Autowired
     private ProductService productService;
@@ -59,14 +58,18 @@ public class productController {
         }
         return update;
     }
+    /*
+    @GetMapping("/get-product/{productId}")
+    public Optional<Product> listProductById(@PathVariable String productId, @RequestHeader("Authorization") String authorization) {
 
-    @GetMapping("/get-product/{id}")
-    public Optional<Product> listProductById(@PathVariable String id, @RequestHeader("Authorization") String authorization) {
-        //userHistoryService.updateUserHistory(id, authorization);
+        productService.incrementProductTotalVisualization(productId);
 
-        productService.incrementProductTotalVisualization(id);
+        return productService.getProductById(productId);
+    }*/
+    @GetMapping("/get-product/{productId}")
+    public boolean listProductById(@PathVariable String productId) {
 
-        return productService.getProductById(id);
+        return userHistoryService.saveHistory(productId);
     }
 
     @GetMapping("/list-products")
