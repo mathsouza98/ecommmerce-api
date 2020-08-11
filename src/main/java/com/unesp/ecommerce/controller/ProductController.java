@@ -67,16 +67,15 @@ public class ProductController {
     }
 
     @GetMapping("/get-product/{productId}")
-    public Optional<Product> listProductById(@PathVariable String productId, @RequestHeader("Authorization") String authorization) {
+    public Optional<Product> listProductById(@PathVariable String productId, @RequestHeader(required = false, value = "Authorization") String authorization) {
 
         if (StringUtils.hasText(authorization) && authorization.startsWith("Bearer ")) {
-            String parsedAuthorization = authorization.substring(7, authorization.length());
+            String parsedAuthorization = authorization.substring(7);
 
             if (jwtUtils.validateJwtToken(parsedAuthorization)) {
                 userHistoryService.handleUserHistoryAction(productId, parsedAuthorization);
             }
         }
-
 
         productService.incrementProductTotalVisualization(productId);
 

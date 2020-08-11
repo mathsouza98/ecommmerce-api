@@ -1,9 +1,8 @@
 package com.unesp.ecommerce.model;
 
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.persistence.Id;
-import java.util.Collections;
 import java.util.List;
 
 @Document
@@ -13,10 +12,9 @@ public class UserHistory {
     String userId;
     List<History> history;
 
-    public UserHistory(String productId, long visualization, String userId) {
-        History history = new History(productId, visualization);
+    public UserHistory(String userId, List<History> history) {
         this.userId = userId;
-        this.history = Collections.singletonList(history);
+        this.history = history;
     }
 
     public String getUserId() {

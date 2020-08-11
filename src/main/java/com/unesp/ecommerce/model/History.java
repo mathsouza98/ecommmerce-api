@@ -5,8 +5,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document
 public class History {
 
-    private final String productId;
-    private long visualization;
+    String productId;
+    long visualization;
 
     public History(String productId, long visualization) {
         this.productId = productId;
@@ -15,6 +15,10 @@ public class History {
 
     public String getProductId() {
         return productId;
+    }
+
+    public void setProductId(String productId) {
+        this.productId = productId;
     }
 
     public long getVisualization() {

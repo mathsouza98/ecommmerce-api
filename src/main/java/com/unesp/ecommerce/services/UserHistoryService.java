@@ -10,6 +10,7 @@ import com.unesp.ecommerce.security.jwt.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,9 +31,9 @@ public class UserHistoryService {
 
     public void handleUserHistoryAction(String productId, String authorization) {
         Optional<UserHistory> userHistory = getUserHistoryByAuthToken(authorization);
+
         if (userHistory.isPresent()) {
-            System.out.println(userHistory);
-            UpdateHistory(userHistory, productId);
+            UpdateHistory(userHistory.get().getUserId(), productId);
         } else {
             saveNewHistory(productId, authorization);
         }
@@ -40,20 +41,33 @@ public class UserHistoryService {
 
     public void saveNewHistory(String productId, String authorization) {
         Optional<User> user = getUserByAuthToken(authorization);
+        List<History> history = new ArrayList<History>();
 
-        userHistoryRepository.save(new UserHistory(productId, 1, user.get().getId()));
+        history.add(new History(productId, 1));
+
+        userHistoryRepository.save(new UserHistory(user.get().getId(), history));
     }
 
-    public void UpdateHistory(Optional<UserHistory> userHistory, String productId) {
-        List<History> history = userHistory.get().getHistory();
-        System.out.println(history.toString());
-        /*for(History h : history) {
-            if(productId == h.getProductId()) {
+    public void UpdateHistory(String userId, String productId) {
+        boolean isAlreadyOnUserHistory = false;
+        Optional<UserHistory> userHistoryToUpdate = userHistoryRepository.findByUserId(userId);
+        List<History> history = userHistoryToUpdate.get().getHistory();
+
+        for (History h : history) {
+            if (h.getProductId().equals(productId)) {
                 long totalVisualization = h.getVisualization();
+
                 h.setVisualization(totalVisualization + 1);
+                isAlreadyOnUserHistory = true;
             }
         }
-        history.add(new History(productId, 1));*/
+
+        if (!isAlreadyOnUserHistory) {
+            history.add(new History(productId, 1));
+        }
+
+        userHistoryToUpdate.get().setHistory(history);
+        userHistoryRepository.save(userHistoryToUpdate.get());
     }
 
     public Optional<UserHistory> getUserHistoryByAuthToken(String authorization) {
