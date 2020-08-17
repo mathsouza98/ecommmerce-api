@@ -91,4 +91,9 @@ public class ProductController {
 
         return null;
     }
+
+    @DeleteMapping("/delete-product/{id}")
+    public boolean deleteProduct(@PathVariable String id) {
+        return productService.deleteProduct(id);
+    }
 }

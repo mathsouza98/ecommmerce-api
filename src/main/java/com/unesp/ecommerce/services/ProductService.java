@@ -50,4 +50,15 @@ public class ProductService {
             productRepository.save(productToUpdate);
         }
     }
+
+    public boolean deleteProduct(String id) {
+        boolean deleted = false;
+        Optional<Product> productToBeDeleted = productRepository.findById(id);
+
+        if(productToBeDeleted.isPresent()) {
+            productRepository.delete(productToBeDeleted.get());
+            deleted = true;
+        }
+        return deleted;
+    }
 }
