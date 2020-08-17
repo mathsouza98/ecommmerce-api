@@ -30,14 +30,8 @@ public class ProductController {
     @PostMapping("/insert-product")
     @PostAuthorize("hasRole('MODERATOR') or hasRole('ADMIN')")
     public Product insertProduct(@RequestBody Product productToBeInserted) {
-        String name = productToBeInserted.getName();
-        String category = productToBeInserted.getCategory();
-        String price = productToBeInserted.getPrice();
-        String brand = productToBeInserted.getBrand();
-        Long stockQuantity = productToBeInserted.getStockQuantity();
-        Long totalVisualization = productToBeInserted.getTotalVisualization();
 
-        return productService.saveProduct(name, category, price, brand, stockQuantity);
+        return productService.saveProduct(productToBeInserted);
     }
 
     @PutMapping("/update-product/{id}")
@@ -56,6 +50,7 @@ public class ProductController {
             _productToBeUpdated.setPrice(product.getPrice());
             _productToBeUpdated.setBrand(product.getBrand());
             _productToBeUpdated.setStockQuantity(product.getStockQuantity());
+
 
             Product productUpdated = productService.updateProduct(_productToBeUpdated);
 

@@ -14,8 +14,8 @@ public class ProductService {
     @Autowired
     private ProductRepository productRepository;
 
-    public Product saveProduct(String name, String category, String price, String brand, Long stockQuantity) {
-        return productRepository.save(new Product(name, category, price, brand, stockQuantity));
+    public Product saveProduct(Product product) {
+        return productRepository.save(product);
     }
 
     public List<Product> getAllProducts() {
