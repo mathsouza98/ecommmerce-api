@@ -1,5 +1,6 @@
 package com.unesp.ecommerce.model;
 
+import org.bson.types.Binary;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -14,14 +15,16 @@ public class Product {
     String brand;
     long stockQuantity;
     long totalVisualization;
+    Binary image;
 
-    public Product(String name, String category, String price, String brand, long stockQuantity) {
+    public Product(String name, String category, String price, String brand, long stockQuantity, Binary image) {
         this.name = name;
         this.category = category;
         this.price = price;
         this.brand = brand;
         this.stockQuantity = stockQuantity;
         this.totalVisualization = 0;
+        this.image = image;
     }
 
     public String getBrand() {
@@ -74,5 +77,13 @@ public class Product {
 
     public void setPrice(String price) {
         this.price = price;
+    }
+
+    public Binary getImage() {
+        return image;
+    }
+
+    public void setImage(Binary image) {
+        this.image = image;
     }
 }
