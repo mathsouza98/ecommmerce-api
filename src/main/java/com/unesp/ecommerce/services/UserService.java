@@ -36,7 +36,37 @@ public class UserService {
     @Autowired
     PasswordEncoder encoder;
 
-    public ResponseEntity<MessageResponse> signupPhysicalUser (SignupRequest signupRequest) {
+    public ResponseEntity<MessageResponse> signupUser (SignupRequest signupRequest, Set<Role> roles) {
+        if (userRepository.existsByUsername(signupRequest.getUsername())) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Error: Username is already taken!"));
+        }
+
+        if ( signupRequest.getCpf() != null ) {
+            if(physicalUserRepository.existsByCpf(signupRequest.getCpf())) {
+                return ResponseEntity
+                        .badRequest()
+                        .body(new MessageResponse("Error: Cpf already taken!"));
+            } else {
+                return signupPhysicalUser(signupRequest, roles);
+            }
+        }
+
+        if ( signupRequest.getCnpj() != null ) {
+            if(legalUserRepository.existsByCnpj(signupRequest.getCnpj())) {
+                return ResponseEntity
+                        .badRequest()
+                        .body(new MessageResponse("Error: Cnpj already taken!"));
+            } else {
+                return signupLegalUser(signupRequest, roles);
+            }
+        }
+
+        return ResponseEntity.badRequest().body(new MessageResponse("Error trying to register user!"));
+    }
+
+    public ResponseEntity<MessageResponse> signupPhysicalUser (SignupRequest signupRequest, Set<Role> roles) {
 
         PhysicalUser physicalUser = new PhysicalUser(
             signupRequest.getUsername(),
@@ -44,14 +74,14 @@ public class UserService {
             signupRequest.getCpf()
         );
 
-        physicalUser.setRoles(getSetRoleBySignupRequest(signupRequest));
+        physicalUser.setRoles(roles);
 
         physicalUserRepository.save(physicalUser);
 
         return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
     }
 
-    public ResponseEntity<MessageResponse> signupLegalUser (SignupRequest signupRequest) {
+    public ResponseEntity<MessageResponse> signupLegalUser (SignupRequest signupRequest, Set<Role> roles) {
 
         LegalUser legalUser = new LegalUser(
             signupRequest.getUsername(),
@@ -59,14 +89,14 @@ public class UserService {
             signupRequest.getCnpj()
         );
 
-        legalUser.setRoles(getSetRoleBySignupRequest(signupRequest));
+        legalUser.setRoles(roles);
 
         legalUserRepository.save(legalUser);
 
         return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
     }
 
-    public Set<Role> getSetRoleBySignupRequest(SignupRequest signupRequest) {
+    public Set<Role> getSetOfRoleBySignupRequest(SignupRequest signupRequest) {
         Set<String> strRoles = signupRequest.getRoles();
         Set<Role> roles = new HashSet<>();
 
