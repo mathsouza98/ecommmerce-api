@@ -1,14 +1,20 @@
 package com.unesp.ecommerce.model;
 
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+@Document
 public class Bill {
 
+    @Id
     String id;
+    String orderId;
     String paymentForm;
     String installmentNumber;
     String status;
 
-    public Bill(String id, String paymentForm, String installmentNumber, String status) {
-        this.id = id;
+    public Bill(String orderId, String paymentForm, String installmentNumber, String status) {
+        this.orderId = orderId;
         this.paymentForm = paymentForm;
         this.installmentNumber = installmentNumber;
         this.status = status;
@@ -44,5 +50,13 @@ public class Bill {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(String orderId) {
+        this.orderId = orderId;
     }
 }

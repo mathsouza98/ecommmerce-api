@@ -1,10 +1,10 @@
 package com.unesp.ecommerce.model;
 
-import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
+@Document
 public class Contact {
 
-    @Id
     String homePhone;
     String commercialPhone;
     String cellPhone;
