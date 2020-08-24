@@ -5,6 +5,7 @@ import java.util.Set;
 public class SignupRequest {
 
     private String username;
+    private String name;
     private Set<String> roles;
     private String password;
     private String cpf;
@@ -41,4 +42,12 @@ public class SignupRequest {
     public String getCnpj() { return cnpj; }
 
     public void setCnpj(String cnpj) { this.cnpj = cnpj; }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 }

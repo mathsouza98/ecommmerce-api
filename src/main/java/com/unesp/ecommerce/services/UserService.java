@@ -71,6 +71,7 @@ public class UserService {
         PhysicalUser physicalUser = new PhysicalUser(
             signupRequest.getUsername(),
             encoder.encode(signupRequest.getPassword()),
+            signupRequest.getName(),
             signupRequest.getCpf()
         );
 
@@ -86,6 +87,7 @@ public class UserService {
         LegalUser legalUser = new LegalUser(
             signupRequest.getUsername(),
             encoder.encode(signupRequest.getPassword()),
+            signupRequest.getName(),
             signupRequest.getCnpj()
         );
 
