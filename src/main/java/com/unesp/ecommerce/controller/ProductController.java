@@ -96,4 +96,21 @@ public class ProductController {
     public boolean deleteProduct(@PathVariable String id) {
         return productService.deleteProduct(id);
     }
+
+    @PostMapping("/populate-database")
+    public void populateDatabase(List<Product> listOfProductsToBeInserted) {
+        for (Product product : listOfProductsToBeInserted) {
+            Product productToInserted = new Product(
+                    product.getName(),
+                    product.getCategory(),
+                    product.getPrice(),
+                    product.getBrand(),
+                    product.getStockQuantity(),
+                    null
+            );
+
+            productService.saveProduct(productToInserted);
+        }
+    }
+
 }

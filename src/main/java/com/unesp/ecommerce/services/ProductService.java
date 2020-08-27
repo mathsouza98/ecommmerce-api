@@ -61,4 +61,12 @@ public class ProductService {
         }
         return deleted;
     }
+
+    public List<Product> populateDatabase() {
+        List<Product> listOfProducts = null;
+
+
+
+        return listOfProducts;
+    }
 }
