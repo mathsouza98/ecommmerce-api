@@ -1,21 +1,20 @@
 package com.unesp.ecommerce.services;
 
-import com.unesp.ecommerce.model.ERole;
-import com.unesp.ecommerce.model.LegalUser;
-import com.unesp.ecommerce.model.PhysicalUser;
-import com.unesp.ecommerce.model.Role;
+import com.unesp.ecommerce.model.*;
 import com.unesp.ecommerce.payload.request.SignupRequest;
 import com.unesp.ecommerce.payload.response.MessageResponse;
 import com.unesp.ecommerce.repository.LegalUserRepository;
 import com.unesp.ecommerce.repository.PhysicalUserRepository;
 import com.unesp.ecommerce.repository.RoleRepository;
 import com.unesp.ecommerce.repository.UserRepository;
+import com.unesp.ecommerce.security.jwt.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -35,6 +34,9 @@ public class UserService {
 
     @Autowired
     PasswordEncoder encoder;
+
+    @Autowired
+    JwtUtils jwtUtils;
 
     public ResponseEntity<MessageResponse> signupUser (SignupRequest signupRequest, Set<Role> roles) {
         if (userRepository.existsByUsername(signupRequest.getUsername())) {
@@ -127,5 +129,11 @@ public class UserService {
             });
         }
         return roles;
+    }
+
+    public Optional<User> getUserByAuthToken(String authorization) {
+        String username = jwtUtils.getUserNameFromJwtToken(authorization);
+
+        return userRepository.findByUsername(username);
     }
 }

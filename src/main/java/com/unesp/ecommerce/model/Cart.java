@@ -4,22 +4,24 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Date;
+import java.util.List;
 
 @Document
 public class Cart {
 
     @Id
-    String id;
-    String userId;
-    float finalPrice;
-    Date creationDate;
-    Date closeDate;
+    private String id;
+    private String userId;
+    private float finalPrice;
+    private Date creationDate;
+    private Date closeDate;
+    private List<Product> productList;
 
-    public Cart(String userId, float finalPrice, Date creationDate, Date closeDate) {
+    public Cart(String userId, float finalPrice, List<Product> productList) {
         this.userId = userId;
         this.finalPrice = finalPrice;
-        this.creationDate = creationDate;
-        this.closeDate = closeDate;
+        this.creationDate = new Date();
+        this.productList = productList;
     }
 
     public String getId() {
@@ -60,5 +62,13 @@ public class Cart {
 
     public void setCloseDate(Date closeDate) {
         this.closeDate = closeDate;
+    }
+
+    public List<Product> getProductList() {
+        return productList;
+    }
+
+    public void setProductList(List<Product> productList) {
+        this.productList = productList;
     }
 }

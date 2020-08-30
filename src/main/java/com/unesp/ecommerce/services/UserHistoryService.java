@@ -29,6 +29,9 @@ public class UserHistoryService {
     @Autowired
     UserRepository userRepository;
 
+    @Autowired
+    UserService userService;
+
     public void handleUserHistoryAction(String productId, String authorization) {
         Optional<UserHistory> userHistory = getUserHistoryByAuthToken(authorization);
 
@@ -40,7 +43,7 @@ public class UserHistoryService {
     }
 
     public void saveNewHistory(String productId, String authorization) {
-        Optional<User> user = getUserByAuthToken(authorization);
+        Optional<User> user = userService.getUserByAuthToken(authorization);
         List<History> history = new ArrayList<History>();
 
         history.add(new History(productId, 1));
@@ -72,7 +75,7 @@ public class UserHistoryService {
 
     public Optional<UserHistory> getUserHistoryByAuthToken(String authorization) {
         Optional<UserHistory> userHistory = null;
-        Optional<User> user = getUserByAuthToken(authorization);
+        Optional<User> user = userService.getUserByAuthToken(authorization);
 
         if(user.isPresent()) {
             String userId = user.get().getId();

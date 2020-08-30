@@ -11,13 +11,14 @@ public class Product {
     String id;
     String name;
     String category;
-    String price;
+    float price;
     String brand;
     long stockQuantity;
+    long orderQuantity;
     long totalVisualization;
     Binary image;
 
-    public Product(String name, String category, String price, String brand, long stockQuantity, Binary image) {
+    public Product(String name, String category, float price, String brand, long stockQuantity, Binary image) {
         this.name = name;
         this.category = category;
         this.price = price;
@@ -25,6 +26,7 @@ public class Product {
         this.stockQuantity = stockQuantity;
         this.totalVisualization = 0;
         this.image = image;
+        this.orderQuantity = 0;
     }
 
     public String getBrand() {
@@ -71,11 +73,11 @@ public class Product {
         this.category = category;
     }
 
-    public String getPrice() {
+    public float getPrice() {
         return price;
     }
 
-    public void setPrice(String price) {
+    public void setPrice(float price) {
         this.price = price;
     }
 
@@ -85,5 +87,13 @@ public class Product {
 
     public void setImage(Binary image) {
         this.image = image;
+    }
+
+    public long getOrderQuantity() {
+        return orderQuantity;
+    }
+
+    public void setOrderQuantity(long orderQuantity) {
+        this.orderQuantity = orderQuantity;
     }
 }
