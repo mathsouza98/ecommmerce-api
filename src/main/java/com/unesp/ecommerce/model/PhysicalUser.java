@@ -3,8 +3,8 @@ package com.unesp.ecommerce.model;
 public class PhysicalUser extends User {
     String cpf;
 
-    public PhysicalUser(String username, String password, String cpf) {
-        super(username, password);
+    public PhysicalUser(String username, String password, String name, String cpf) {
+        super(username, password, name);
         this.cpf = cpf;
     }
 
