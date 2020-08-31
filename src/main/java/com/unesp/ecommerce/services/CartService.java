@@ -7,6 +7,7 @@ import com.unesp.ecommerce.repository.CartRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,26 +30,27 @@ public class CartService {
         return cart;
     }
 
-    public String addProductOnCart(String productId, String authorization, String cartId) {
-        Optional<Cart> cart = cartRepository.findById(cartId);
-        List<Product> cartProductList = null;
+    public String addProductOnCart(String productId, String cartId, String authorization) {
+        Cart newCart = null;
+        List<Product> cartProductList = new ArrayList<Product>();
 
-        User user = userService.getUserByAuthToken(authorization)
-            .orElseThrow(() -> new RuntimeException("Error: User not found"));
+        Optional<Cart> cart = cartRepository.findById(cartId);
+
+        User user = userService.getUserByAuthorization(authorization);
 
         Product product = productService.getProductById(productId)
             .orElseThrow(() -> new RuntimeException("Error: User not found"));
 
         if (!cart.isPresent()) {
             cartProductList.add(product);
-            cart = Optional.of(new Cart(user.getId(), product.getPrice(), cartProductList));
-
-            cartRepository.save(cart.get());
-            return cart.get().getId();
+            System.out.println(cartProductList);
+            newCart = new Cart(user.getId(), product.getPrice(), cartProductList);
+            cartRepository.save(newCart);
+            return newCart.getId();
         }
 
         if (isProductAlreadyOnCart(cart.get(), product.getId())) {
-            incrementProductQuantityOnCart(cart.get(), productId);
+            incrementProductOrderQuantityOnCart(cart.get(), productId);
         } else {
             appendProductOnCart(cart.get(), product);
         }
@@ -72,7 +74,7 @@ public class CartService {
         return condition;
     }
 
-    public void incrementProductQuantityOnCart(Cart cart, String productId) {
+    public void incrementProductOrderQuantityOnCart(Cart cart, String productId) {
         String cartProductId = null;
         long orderQuantity = 0;
         List<Product> cartProductsList = cart.getProductList();
