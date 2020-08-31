@@ -64,13 +64,7 @@ public class ProductController {
     @GetMapping("/get-product/{productId}")
     public Optional<Product> listProductById(@PathVariable String productId, @RequestHeader(required = false, value = "Authorization") String authorization) {
 
-        if (StringUtils.hasText(authorization) && authorization.startsWith("Bearer ")) {
-            String parsedAuthorization = authorization.substring(7);
-
-            if (jwtUtils.validateJwtToken(parsedAuthorization)) {
-                userHistoryService.handleUserHistoryAction(productId, parsedAuthorization);
-            }
-        }
+        userHistoryService.handleUserHistoryAction(productId, authorization);
 
         productService.incrementProductTotalVisualization(productId);
 
@@ -80,16 +74,6 @@ public class ProductController {
     @GetMapping("/list-products")
     public List<Product> listAllProducts() {
         return productService.getAllProducts();
-    }
-
-    private String parseJwt(HttpServletRequest request) {
-        String headerAuth = request.getHeader("Authorization");
-
-        if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer ")) {
-            return headerAuth.substring(7, headerAuth.length());
-        }
-
-        return null;
     }
 
     @DeleteMapping("/delete-product/{id}")

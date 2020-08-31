@@ -16,17 +16,17 @@ public class Product {
     long stockQuantity;
     long orderQuantity;
     long totalVisualization;
-    Binary image;
+    String imagePathUrl;
 
-    public Product(String name, String category, float price, String brand, long stockQuantity, Binary image) {
+    public Product(String name, String category, float price, String brand, long stockQuantity, String imagePathUrl) {
         this.name = name;
         this.category = category;
         this.price = price;
         this.brand = brand;
         this.stockQuantity = stockQuantity;
-        this.totalVisualization = 0;
-        this.image = image;
+        this.imagePathUrl = imagePathUrl;
         this.orderQuantity = 0;
+        this.totalVisualization = 0;
     }
 
     public String getBrand() {
@@ -81,12 +81,12 @@ public class Product {
         this.price = price;
     }
 
-    public Binary getImage() {
-        return image;
+    public String getImagePathUrl() {
+        return imagePathUrl;
     }
 
-    public void setImage(Binary image) {
-        this.image = image;
+    public void setImagePathUrl(String imagePathUrl) {
+        this.imagePathUrl = imagePathUrl;
     }
 
     public long getOrderQuantity() {

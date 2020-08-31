@@ -33,7 +33,7 @@ public class UserHistoryService {
     UserService userService;
 
     public void handleUserHistoryAction(String productId, String authorization) {
-        Optional<UserHistory> userHistory = getUserHistoryByAuthToken(authorization);
+        Optional<UserHistory> userHistory = getUserHistoryByAuthorization(authorization);
 
         if (userHistory.isPresent()) {
             UpdateHistory(userHistory.get().getUserId(), productId);
@@ -43,12 +43,12 @@ public class UserHistoryService {
     }
 
     public void saveNewHistory(String productId, String authorization) {
-        Optional<User> user = userService.getUserByAuthToken(authorization);
+        User user = userService.getUserByAuthorization(authorization);
         List<History> history = new ArrayList<History>();
 
         history.add(new History(productId, 1));
 
-        userHistoryRepository.save(new UserHistory(user.get().getId(), history));
+        userHistoryRepository.save(new UserHistory(user.getId(), history));
     }
 
     public void UpdateHistory(String userId, String productId) {
@@ -73,21 +73,11 @@ public class UserHistoryService {
         userHistoryRepository.save(userHistoryToUpdate.get());
     }
 
-    public Optional<UserHistory> getUserHistoryByAuthToken(String authorization) {
+    public Optional<UserHistory> getUserHistoryByAuthorization(String authorization) {
         Optional<UserHistory> userHistory = null;
-        Optional<User> user = userService.getUserByAuthToken(authorization);
+        User user = userService.getUserByAuthorization(authorization);
+        String userId = user.getId();
 
-        if(user.isPresent()) {
-            String userId = user.get().getId();
-
-            userHistory = userHistoryRepository.findByUserId(userId);
-        }
-        return userHistory;
-    }
-
-    public Optional<User> getUserByAuthToken(String authorization) {
-        String username = jwtUtils.getUserNameFromJwtToken(authorization);
-
-        return userRepository.findByUsername(username);
+        return userHistoryRepository.findByUserId(userId);
     }
 }

@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.HashSet;
 import java.util.Optional;
@@ -133,9 +134,18 @@ public class UserService {
         return roles;
     }
 
-    public Optional<User> getUserByAuthToken(String authorization) {
-        String username = jwtUtils.getUserNameFromJwtToken(authorization);
+    public User getUserByAuthorization(String authorization) {
+        User user = null;
+        String username;
 
-        return userRepository.findByUsername(username);
+        if (authorization.startsWith("Bearer ")) {
+            String jwtToken = authorization.substring(7);
+
+            if (jwtUtils.validateJwtToken(jwtToken)) {
+                username = jwtUtils.getUserNameFromJwtToken(jwtToken);
+                user = userRepository.findByUsername(username).orElseThrow(() -> new RuntimeException("Error: User is not found."));
+            }
+        }
+        return user;
     }
 }
