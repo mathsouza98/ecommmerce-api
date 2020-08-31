@@ -25,7 +25,7 @@ public class Product {
         this.brand = brand;
         this.stockQuantity = stockQuantity;
         this.imagePathUrl = imagePathUrl;
-        this.orderQuantity = 0;
+        this.orderQuantity = 1;
         this.totalVisualization = 0;
     }
 

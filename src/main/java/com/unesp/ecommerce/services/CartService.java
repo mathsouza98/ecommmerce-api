@@ -43,9 +43,10 @@ public class CartService {
 
         if (!cart.isPresent()) {
             cartProductList.add(product);
-            System.out.println(cartProductList);
             newCart = new Cart(user.getId(), product.getPrice(), cartProductList);
+            
             cartRepository.save(newCart);
+            
             return newCart.getId();
         }
 
@@ -75,8 +76,9 @@ public class CartService {
     }
 
     public void incrementProductOrderQuantityOnCart(Cart cart, String productId) {
-        String cartProductId = null;
         long orderQuantity = 0;
+        float cartFinalPrice = cart.getFinalPrice();
+        String cartProductId = null;
         List<Product> cartProductsList = cart.getProductList();
 
         for (Product cartProduct : cartProductsList) {
@@ -87,6 +89,7 @@ public class CartService {
 
                 cartProduct.setOrderQuantity(orderQuantity + 1);
                 cart.setProductList(cartProductsList);
+                cart.setFinalPrice(cartFinalPrice + cartProduct.getPrice());
 
                 cartRepository.save(cart);
             }
@@ -95,10 +98,12 @@ public class CartService {
 
     public void appendProductOnCart(Cart cart, Product product) {
         List<Product> cartProductsList = cart.getProductList();
+        float cartFinalPrice = cart.getFinalPrice();
 
         cartProductsList.add(product);
         cart.setProductList(cartProductsList);
-
+        cart.setFinalPrice(cartFinalPrice + product.getPrice());
+        
         cartRepository.save(cart);
     }
 }
