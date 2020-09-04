@@ -27,56 +27,34 @@ public class ProductController {
     @Autowired
     private JwtUtils jwtUtils;
 
-    @PostMapping("/insert-product")
+    @PostMapping("/products")
     @PostAuthorize("hasRole('MODERATOR') or hasRole('ADMIN')")
     public Product insertProduct(@RequestBody Product productToBeInserted) {
-
         return productService.saveProduct(productToBeInserted);
     }
 
-    @PutMapping("/update-product/{id}")
-    @PostAuthorize("hasRole('MODERATOR') or hasRole('ADMIN')")
-    public boolean updateProduct(@PathVariable String id, @RequestBody Product product) {
-        boolean update = false;
+    @GetMapping("/products/{id}")
+    public Optional<Product> listProductById(@PathVariable String id, @RequestHeader(required = false, value = "Authorization") String authorization) {
 
-        Optional<Product> productUpdate = productService.getProductById(id);
+        userHistoryService.handleUserHistoryAction(id, authorization);
 
-        if(productUpdate.isPresent()) {
+        productService.incrementProductTotalVisualization(id);
 
-            Product _productToBeUpdated = productUpdate.get();
-
-            _productToBeUpdated.setName(product.getName());
-            _productToBeUpdated.setCategory(product.getCategory());
-            _productToBeUpdated.setPrice(product.getPrice());
-            _productToBeUpdated.setBrand(product.getBrand());
-            _productToBeUpdated.setStockQuantity(product.getStockQuantity());
-
-
-            Product productUpdated = productService.updateProduct(_productToBeUpdated);
-
-            if(productUpdated != null) {
-                update = true;
-            }
-        }
-        return update;
+        return productService.getProductById(id);
     }
 
-    @GetMapping("/get-product/{productId}")
-    public Optional<Product> listProductById(@PathVariable String productId, @RequestHeader(required = false, value = "Authorization") String authorization) {
-
-        userHistoryService.handleUserHistoryAction(productId, authorization);
-
-        productService.incrementProductTotalVisualization(productId);
-
-        return productService.getProductById(productId);
-    }
-
-    @GetMapping("/list-products")
+    @GetMapping("/products")
     public List<Product> listAllProducts() {
         return productService.getAllProducts();
     }
 
-    @DeleteMapping("/delete-product/{id}")
+    @PutMapping("/products/{id}")
+    @PostAuthorize("hasRole('MODERATOR') or hasRole('ADMIN')")
+    public Product updateProduct(@PathVariable String id, @RequestBody Product product) {
+        return productService.updateProduct(id, product);
+    }
+
+    @DeleteMapping("/products/{id}")
     public boolean deleteProduct(@PathVariable String id) {
         return productService.deleteProduct(id);
     }
