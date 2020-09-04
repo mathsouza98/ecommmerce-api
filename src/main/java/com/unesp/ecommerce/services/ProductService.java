@@ -29,36 +29,33 @@ public class ProductService {
     public Optional<Product> getProductById(String id) { return productRepository.findById(id); }
 
     public Product updateProduct(Product product) {
-       Product persistedProduct = null;
 
-       if(productRepository != null) {
-           persistedProduct = productRepository.save(product);
-       }
-       return persistedProduct;
+        if (productRepository == null) return null;
+
+        return productRepository.save(product);
     }
 
     public void incrementProductTotalVisualization(String id) {
         long totalVisualization;
         Optional<Product> product = productRepository.findById(id);
 
-        if(product.isPresent()) {
-            Product productToUpdate = product.get();
-            totalVisualization = productToUpdate.getTotalVisualization();
+        if (!product.isPresent()) return;
 
-            productToUpdate.setTotalVisualization(totalVisualization + 1);
+        Product productToUpdate = product.get();
+        totalVisualization = productToUpdate.getTotalVisualization();
 
-            productRepository.save(productToUpdate);
-        }
+        productToUpdate.setTotalVisualization(totalVisualization + 1);
+
+        productRepository.save(productToUpdate);
     }
 
     public boolean deleteProduct(String id) {
-        boolean deleted = false;
         Optional<Product> productToBeDeleted = productRepository.findById(id);
 
-        if(productToBeDeleted.isPresent()) {
-            productRepository.delete(productToBeDeleted.get());
-            deleted = true;
-        }
-        return deleted;
+        if (!productToBeDeleted.isPresent()) return false;
+
+        productRepository.delete(productToBeDeleted.get());
+
+        return true;
     }
 }
