@@ -13,7 +13,7 @@ public class CartController {
     @Autowired
     private CartService cartService;
 
-    @PostMapping("/buy-product/{productId}")
+    @PostMapping("/cart/{productId}")
     //@PostAuthorize("hasRole('MODERATOR') or hasRole('ADMIN')")
     public String buyProduct(@PathVariable String productId, @RequestHeader(required = false, value = "CartId") String cartId, @RequestHeader(value = "Authorization") String authorization) {
 

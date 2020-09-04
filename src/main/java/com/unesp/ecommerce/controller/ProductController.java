@@ -27,34 +27,34 @@ public class ProductController {
     @Autowired
     private JwtUtils jwtUtils;
 
-    @PostMapping("/insert-product")
+    @PostMapping("/products")
     @PostAuthorize("hasRole('MODERATOR') or hasRole('ADMIN')")
     public Product insertProduct(@RequestBody Product productToBeInserted) {
         return productService.saveProduct(productToBeInserted);
     }
 
-    @PutMapping("/update-product/{id}")
+    @GetMapping("/products/{id}")
+    public Optional<Product> listProductById(@PathVariable String id, @RequestHeader(required = false, value = "Authorization") String authorization) {
+
+        userHistoryService.handleUserHistoryAction(id, authorization);
+
+        productService.incrementProductTotalVisualization(id);
+
+        return productService.getProductById(id);
+    }
+
+    @GetMapping("/products")
+    public List<Product> listAllProducts() {
+        return productService.getAllProducts();
+    }
+
+    @PutMapping("/products/{id}")
     @PostAuthorize("hasRole('MODERATOR') or hasRole('ADMIN')")
     public Product updateProduct(@PathVariable String id, @RequestBody Product product) {
         return productService.updateProduct(id, product);
     }
 
-    @GetMapping("/get-product/{productId}")
-    public Optional<Product> listProductById(@PathVariable String productId, @RequestHeader(required = false, value = "Authorization") String authorization) {
-
-        userHistoryService.handleUserHistoryAction(productId, authorization);
-
-        productService.incrementProductTotalVisualization(productId);
-
-        return productService.getProductById(productId);
-    }
-
-    @GetMapping("/list-products")
-    public List<Product> listAllProducts() {
-        return productService.getAllProducts();
-    }
-
-    @DeleteMapping("/delete-product/{id}")
+    @DeleteMapping("/products/{id}")
     public boolean deleteProduct(@PathVariable String id) {
         return productService.deleteProduct(id);
     }
