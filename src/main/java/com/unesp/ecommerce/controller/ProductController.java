@@ -30,35 +30,13 @@ public class ProductController {
     @PostMapping("/insert-product")
     @PostAuthorize("hasRole('MODERATOR') or hasRole('ADMIN')")
     public Product insertProduct(@RequestBody Product productToBeInserted) {
-
         return productService.saveProduct(productToBeInserted);
     }
 
     @PutMapping("/update-product/{id}")
     @PostAuthorize("hasRole('MODERATOR') or hasRole('ADMIN')")
-    public boolean updateProduct(@PathVariable String id, @RequestBody Product product) {
-        boolean update = false;
-
-        Optional<Product> productUpdate = productService.getProductById(id);
-
-        if(productUpdate.isPresent()) {
-
-            Product _productToBeUpdated = productUpdate.get();
-
-            _productToBeUpdated.setName(product.getName());
-            _productToBeUpdated.setCategory(product.getCategory());
-            _productToBeUpdated.setPrice(product.getPrice());
-            _productToBeUpdated.setBrand(product.getBrand());
-            _productToBeUpdated.setStockQuantity(product.getStockQuantity());
-
-
-            Product productUpdated = productService.updateProduct(_productToBeUpdated);
-
-            if(productUpdated != null) {
-                update = true;
-            }
-        }
-        return update;
+    public Product updateProduct(@PathVariable String id, @RequestBody Product product) {
+        return productService.updateProduct(id, product);
     }
 
     @GetMapping("/get-product/{productId}")

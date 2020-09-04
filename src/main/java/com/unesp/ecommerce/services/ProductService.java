@@ -28,11 +28,21 @@ public class ProductService {
 
     public Optional<Product> getProductById(String id) { return productRepository.findById(id); }
 
-    public Product updateProduct(Product product) {
+    public Product updateProduct(String id, Product product) {
+        Product _product = productRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Error: Product not found"));
 
         if (productRepository == null) return null;
 
-        return productRepository.save(product);
+        _product.setName(product.getName());
+        _product.setCategory(product.getCategory());
+        _product.setPrice(product.getPrice());
+        _product.setBrand(product.getBrand());
+        _product.setStockQuantity(product.getStockQuantity());
+        _product.setImagePathUrl(product.getImagePathUrl());
+        _product.setOrderQuantity(product.getOrderQuantity());
+
+        return productRepository.save(_product);
     }
 
     public void incrementProductTotalVisualization(String id) {
