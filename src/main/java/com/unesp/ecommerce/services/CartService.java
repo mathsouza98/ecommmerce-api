@@ -27,20 +27,18 @@ public class CartService {
     @Autowired
     JwtUtils jwtUtils;
 
-    public Cart getCart(String cartId) {
-        Cart cart = cartRepository.findById(cartId)
-            .orElseThrow(() -> new RuntimeException("Error: Cart is not found."));
+    public Optional<Cart> getCart(String userId) {
+        Optional<Cart> cart = cartRepository.findByUserId(userId);
 
         return cart;
     }
 
-    public String addProductOnCart(String productId, String cartId, String authorization) {
-        Cart newCart = null;
+    public Product addProductOnCart(String productId, String authorization) {
+        Cart newCart;
         List<Product> cartProductList = new ArrayList<Product>();
-
-        Optional<Cart> cart = cartRepository.findById(cartId);
-
         User user = jwtUtils.getUserByAuthorization(authorization);
+
+        Optional<Cart> cart = getCart(user.getId());
 
         Product product = productService.getProductById(productId)
             .orElseThrow(() -> new RuntimeException("Error: Product not found"));
@@ -50,8 +48,8 @@ public class CartService {
             newCart = new Cart(user.getId(), product.getPrice(), cartProductList);
             
             cartRepository.save(newCart);
-            
-            return newCart.getId();
+
+            return product;
         }
 
         if (isProductAlreadyOnCart(cart.get(), product.getId())) {
@@ -60,44 +58,53 @@ public class CartService {
             appendProductOnCart(cart.get(), product);
         }
 
-        return cart.get().getId();
+        return product;
     }
 
     public boolean isProductAlreadyOnCart(Cart cart, String productId) {
-        boolean condition = false;
-        String cartProductId;
         List<Product> cartProductsList = cart.getProductList();
 
-        for (Product cartProduct : cartProductsList) {
-            cartProductId = cartProduct.getId();
+        Optional<Product> cartProduct  = cartProductsList.stream().filter(product -> product.getId().equals(productId)).findFirst();
 
-            if (cartProductId.equals(productId)) {
-                condition = true;
-            }
+        if (cartProduct.isPresent()) {
+            return true;
+        } else {
+            return false;
         }
-
-        return condition;
     }
 
     public void incrementProductOrderQuantityOnCart(Cart cart, String productId) {
-        long orderQuantity = 0;
+        long orderQuantity;
         float cartFinalPrice = cart.getFinalPrice();
-        String cartProductId = null;
         List<Product> cartProductsList = cart.getProductList();
 
-        for (Product cartProduct : cartProductsList) {
-            cartProductId = cartProduct.getId();
+        Product cartProduct  = cartProductsList.stream().filter(product -> product.getId().equals(productId)).findFirst()
+                .orElseThrow(() -> new RuntimeException("Error: Product not found on cart"));
 
-            if (cartProductId.equals(productId)) {
-                orderQuantity = cartProduct.getOrderQuantity();
+        orderQuantity = cartProduct.getOrderQuantity();
 
-                cartProduct.setOrderQuantity(orderQuantity + 1);
-                cart.setProductList(cartProductsList);
-                cart.setFinalPrice(cartFinalPrice + cartProduct.getPrice());
+        cartProduct.setOrderQuantity(orderQuantity + 1);
+        cart.setProductList(cartProductsList);
+        cart.setFinalPrice(cartFinalPrice + cartProduct.getPrice());
 
-                cartRepository.save(cart);
-            }
-        }
+        cartRepository.save(cart);
+    }
+
+    public void decrementProductOrderQuantityOnCart(Cart cart, String productId) {
+        long orderQuantity;
+        float cartFinalPrice = cart.getFinalPrice();
+        List<Product> cartProductsList = cart.getProductList();
+
+        Product cartProduct  = cartProductsList.stream().filter(product -> product.getId().equals(productId)).findFirst()
+                .orElseThrow(() -> new RuntimeException("Error: Product not found on cart"));
+
+        orderQuantity = cartProduct.getOrderQuantity();
+
+        cartProduct.setOrderQuantity(orderQuantity - 1);
+        cart.setProductList(cartProductsList);
+        cart.setFinalPrice(cartFinalPrice + cartProduct.getPrice());
+
+        cartRepository.save(cart);
     }
 
     public void appendProductOnCart(Cart cart, Product product) {
@@ -107,7 +114,7 @@ public class CartService {
         cartProductsList.add(product);
         cart.setProductList(cartProductsList);
         cart.setFinalPrice(cartFinalPrice + product.getPrice());
-        
+
         cartRepository.save(cart);
     }
 }
