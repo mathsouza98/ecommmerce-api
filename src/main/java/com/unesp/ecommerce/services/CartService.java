@@ -4,6 +4,7 @@ import com.unesp.ecommerce.model.Cart;
 import com.unesp.ecommerce.model.Product;
 import com.unesp.ecommerce.model.User;
 import com.unesp.ecommerce.repository.CartRepository;
+import com.unesp.ecommerce.security.jwt.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +24,9 @@ public class CartService {
     @Autowired
     ProductService productService;
 
+    @Autowired
+    JwtUtils jwtUtils;
+
     public Cart getCart(String cartId) {
         Cart cart = cartRepository.findById(cartId)
             .orElseThrow(() -> new RuntimeException("Error: Cart is not found."));
@@ -36,10 +40,10 @@ public class CartService {
 
         Optional<Cart> cart = cartRepository.findById(cartId);
 
-        User user = userService.getUserByAuthorization(authorization);
+        User user = jwtUtils.getUserByAuthorization(authorization);
 
         Product product = productService.getProductById(productId)
-            .orElseThrow(() -> new RuntimeException("Error: User not found"));
+            .orElseThrow(() -> new RuntimeException("Error: Product not found"));
 
         if (!cart.isPresent()) {
             cartProductList.add(product);
