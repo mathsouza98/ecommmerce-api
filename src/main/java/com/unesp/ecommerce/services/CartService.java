@@ -19,9 +19,6 @@ public class CartService {
     private CartRepository cartRepository;
 
     @Autowired
-    UserService userService;
-
-    @Autowired
     ProductService productService;
 
     @Autowired
@@ -116,5 +113,11 @@ public class CartService {
         cart.setFinalPrice(cartFinalPrice + product.getPrice());
 
         cartRepository.save(cart);
+    }
+
+    public void deleteProductsOnCart(String userId) {
+        Cart cart = getCart(userId)
+                .orElseThrow(() -> new RuntimeException("Error: Cart not found"));
+        cart.setProductList(new ArrayList<Product>());
     }
 }
