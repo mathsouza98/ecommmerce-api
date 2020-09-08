@@ -53,10 +53,10 @@ public class ProductController {
     }
 
     @GetMapping("/recomend/products")
-    public List<Product> listRecommendedProducts(@RequestHeader(required = false, value = "Authorization") String authorization) throws IOException {
+    public String listRecommendedProducts(@RequestHeader(required = false, value = "Authorization") String authorization) throws IOException {
         User user = jwtUtils.getUserByAuthorization(authorization);
 
-        return recommendProductsService.callRecommendendApi(user.getId());
+        return String.valueOf(recommendProductsService.callRecommendendApi(user.getId()));
     }
 
     @PutMapping("/products/{id}")

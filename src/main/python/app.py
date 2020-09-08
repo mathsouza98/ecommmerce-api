@@ -10,10 +10,13 @@ app = Flask(__name__)
 def run_api(user_id: str):
 
     # Chama a função de recomendação e retorna uma lista com o id dos produtos recomendados
-    recomendation = list(recommend_products(user_id))
+    # recomendation = list(recommend_products(user_id))
 
     # Retorna um json com o output da função "recommend_products"
-    return jsonify(productId=str(recomendation)), 200
+    # return jsonify(productId=str(recomendation)), 200
+
+    recomendation = recommend_products(user_id)
+    return str(recomendation), 200
 
 # Inicia a aplicação
 if __name__ == '__main__':

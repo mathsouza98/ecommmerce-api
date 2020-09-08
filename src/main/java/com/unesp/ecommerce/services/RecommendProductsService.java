@@ -1,5 +1,6 @@
 package com.unesp.ecommerce.services;
 
+import com.unesp.ecommerce.model.Product;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
@@ -7,13 +8,18 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class RecommendProductsService {
 
-    public String callRecommendendApi(String userId) throws IOException {
+    public StringBuffer callRecommendendApi(String userId) throws IOException {
         // API server address
         String url = "http://127.0.0.1:5000/";
+
+        // Product List
+        List<Product> recommendedProducts = new ArrayList<Product>();
 
         if (userId == null) {
             System.out.println("\n Requisição GET para a URL: " + url);
@@ -35,6 +41,8 @@ public class RecommendProductsService {
 
             // Shows recommended products on screen
             System.out.println(response.toString());
+
+            return response;
         }
         else {
             System.out.println("\n Requisição GET para a URL: " + url + userId);
@@ -56,8 +64,8 @@ public class RecommendProductsService {
 
             // Shows recommended products on screen
             System.out.println(response.toString());
-        }
 
-        return null;
+            return response;
+        }
     }
 }
