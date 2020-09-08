@@ -1,15 +1,16 @@
 package com.unesp.ecommerce.controller;
 
 import com.unesp.ecommerce.model.Product;
+import com.unesp.ecommerce.model.User;
 import com.unesp.ecommerce.security.jwt.JwtUtils;
 import com.unesp.ecommerce.services.ProductService;
+import com.unesp.ecommerce.services.RecommendProductsService;
 import com.unesp.ecommerce.services.UserHistoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PostAuthorize;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,6 +24,9 @@ public class ProductController {
 
     @Autowired
     private UserHistoryService userHistoryService;
+
+    @Autowired
+    private RecommendProductsService recommendProductsService;
 
     @Autowired
     private JwtUtils jwtUtils;
@@ -46,6 +50,13 @@ public class ProductController {
     @GetMapping("/products")
     public List<Product> listAllProducts() {
         return productService.getAllProducts();
+    }
+
+    @GetMapping("/recomend/products")
+    public List<Product> listRecommendedProducts(@RequestHeader(required = false, value = "Authorization") String authorization) throws IOException {
+        User user = jwtUtils.getUserByAuthorization(authorization);
+
+        return recommendProductsService.callRecommendendApi(user.getId());
     }
 
     @PutMapping("/products/{id}")

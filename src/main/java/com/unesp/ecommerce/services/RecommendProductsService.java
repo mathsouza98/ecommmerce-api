@@ -1,11 +1,14 @@
 package com.unesp.ecommerce.services;
 
+import org.springframework.stereotype.Service;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+@Service
 public class RecommendProductsService {
 
     public String callRecommendendApi(String userId) throws IOException {
@@ -34,7 +37,7 @@ public class RecommendProductsService {
             System.out.println(response.toString());
         }
         else {
-            System.out.println("\n Requisição GET para a URL: " + url +userId);
+            System.out.println("\n Requisição GET para a URL: " + url + userId);
 
             // Instantiating URL object for passed userId and establishing connection
             URL obj = new URL(url + userId);
