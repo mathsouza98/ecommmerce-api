@@ -10,6 +10,7 @@ import com.unesp.ecommerce.security.jwt.JwtUtils;
 import com.unesp.ecommerce.security.services.UserDetailsImpl;
 import com.unesp.ecommerce.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -29,6 +30,9 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
+    @Value("${ecommerce.globalVariables.tokenPrefix}")
+    private String tokenPrefix;
+
     @Autowired
     AuthenticationManager authenticationManager;
 
@@ -55,9 +59,9 @@ public class AuthController {
                 .map(item -> item.getAuthority())
                 .collect(Collectors.toList());
 
-        response.addHeader("Authorization", "Bearer" + " " + jwt);
+        response.addHeader("Authorization", tokenPrefix + " " + jwt);
 
-        return ResponseEntity.ok(new JwtResponse(jwt,
+        return ResponseEntity.ok(new JwtResponse(tokenPrefix + " " + jwt,
                 userDetails.getId(),
                 userDetails.getUsername(),
                 roles));
