@@ -20,7 +20,7 @@ public class JwtUtils {
     private static final Logger logger = LoggerFactory.getLogger(JwtUtils.class);
 
     @Value("${ecommerce.globalVariables.tokenPrefix}")
-    String tokenPrefix;
+    private String tokenPrefix;
 
     @Value("${ecommerce.globalVariables.jwtExpirationMs}")
     private int jwtExpirationMs;
