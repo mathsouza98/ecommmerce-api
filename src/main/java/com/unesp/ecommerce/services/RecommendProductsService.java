@@ -29,10 +29,8 @@ public class RecommendProductsService {
         // Product List
         List<Product> recommendedProducts = new ArrayList<Product>();
 
-        if (jwtUtils.validateJwtToken(authorization)) {
-            user = jwtUtils.getUserByAuthorization(authorization);
-            userId = user.getId();
-        }
+        user = jwtUtils.getUserByAuthorization(authorization);
+        userId = user.getId();
 
         if (userId == null) {
             System.out.println("\n Requisição GET para a URL: " + url);
