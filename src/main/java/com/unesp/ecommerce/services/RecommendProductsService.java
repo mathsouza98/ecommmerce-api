@@ -23,11 +23,9 @@ public class RecommendProductsService {
     public StringBuffer callRecommendendApi(String authorization) throws IOException {
         User user;
         String userId = null;
+
         // API server address
         String url = "http://127.0.0.1:5000/";
-
-        // Product List
-        List<Product> recommendedProducts = new ArrayList<Product>();
 
         if (jwtUtils.validateJwtToken(authorization)) {
             user = jwtUtils.getUserByAuthorization(authorization);
