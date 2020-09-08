@@ -1,8 +1,8 @@
 package com.unesp.ecommerce.controller;
 
+import com.unesp.ecommerce.model.Product;
 import com.unesp.ecommerce.services.CartService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -15,8 +15,7 @@ public class CartController {
 
     @PostMapping("/cart/{productId}")
     //@PostAuthorize("hasRole('MODERATOR') or hasRole('ADMIN')")
-    public String buyProduct(@PathVariable String productId, @RequestHeader(required = false, value = "CartId") String cartId, @RequestHeader(value = "Authorization") String authorization) {
-
-        return cartService.addProductOnCart(productId, cartId, authorization);
+    public Product buyProduct(@PathVariable String productId, @RequestHeader(value = "Authorization") String authorization) {
+        return cartService.addProductOnCart(productId, authorization);
     }
 }

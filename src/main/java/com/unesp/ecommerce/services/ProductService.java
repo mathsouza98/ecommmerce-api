@@ -32,8 +32,6 @@ public class ProductService {
         Product _product = productRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Error: Product not found"));
 
-        if (productRepository == null) return null;
-
         _product.setName(product.getName());
         _product.setCategory(product.getCategory());
         _product.setPrice(product.getPrice());

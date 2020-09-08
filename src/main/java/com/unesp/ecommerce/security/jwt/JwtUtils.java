@@ -1,10 +1,13 @@
 package com.unesp.ecommerce.security.jwt;
 
+import com.unesp.ecommerce.model.User;
+import com.unesp.ecommerce.repository.UserRepository;
 import com.unesp.ecommerce.security.services.UserDetailsImpl;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
@@ -16,10 +19,16 @@ import java.util.Date;
 public class JwtUtils {
     private static final Logger logger = LoggerFactory.getLogger(JwtUtils.class);
 
-    SecretKey secretKey = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+    @Value("${ecommerce.globalVariables.tokenPrefix}")
+    private String tokenPrefix;
 
     @Value("${ecommerce.globalVariables.jwtExpirationMs}")
     private int jwtExpirationMs;
+
+    @Autowired
+    UserRepository userRepository;
+
+    SecretKey secretKey = Keys.secretKeyFor(SignatureAlgorithm.HS256);
 
     public String generateJwtToken(Authentication authentication) {
 
@@ -54,5 +63,19 @@ public class JwtUtils {
         }
 
         return false;
+    }
+
+    public User getUserByAuthorization(String authorization) {
+        String username;
+
+        if (!authorization.startsWith(tokenPrefix)) return null;
+
+        String jwtToken = authorization.substring(7);
+
+        if (!validateJwtToken(jwtToken)) return null;
+
+        username = getUserNameFromJwtToken(jwtToken);
+
+        return userRepository.findByUsername(username).orElseThrow(() -> new RuntimeException("Error: User is not found."));
     }
 }
