@@ -1,6 +1,9 @@
 package com.unesp.ecommerce.services;
 
 import com.unesp.ecommerce.model.Product;
+import com.unesp.ecommerce.model.User;
+import com.unesp.ecommerce.security.jwt.JwtUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
@@ -14,12 +17,22 @@ import java.util.List;
 @Service
 public class RecommendProductsService {
 
-    public StringBuffer callRecommendendApi(String userId) throws IOException {
+    @Autowired
+    JwtUtils jwtUtils;
+
+    public StringBuffer callRecommendendApi(String authorization) throws IOException {
+        User user;
+        String userId = null;
         // API server address
         String url = "http://127.0.0.1:5000/";
 
         // Product List
         List<Product> recommendedProducts = new ArrayList<Product>();
+
+        if (jwtUtils.validateJwtToken(authorization)) {
+            user = jwtUtils.getUserByAuthorization(authorization);
+            userId = user.getId();
+        }
 
         if (userId == null) {
             System.out.println("\n Requisição GET para a URL: " + url);

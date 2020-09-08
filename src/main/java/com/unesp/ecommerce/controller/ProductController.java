@@ -1,8 +1,6 @@
 package com.unesp.ecommerce.controller;
 
 import com.unesp.ecommerce.model.Product;
-import com.unesp.ecommerce.model.User;
-import com.unesp.ecommerce.security.jwt.JwtUtils;
 import com.unesp.ecommerce.services.ProductService;
 import com.unesp.ecommerce.services.RecommendProductsService;
 import com.unesp.ecommerce.services.UserHistoryService;
@@ -28,9 +26,6 @@ public class ProductController {
     @Autowired
     private RecommendProductsService recommendProductsService;
 
-    @Autowired
-    private JwtUtils jwtUtils;
-
     @PostMapping("/products")
     @PostAuthorize("hasRole('MODERATOR') or hasRole('ADMIN')")
     public Product insertProduct(@RequestBody Product productToBeInserted) {
@@ -52,11 +47,9 @@ public class ProductController {
         return productService.getAllProducts();
     }
 
-    @GetMapping("/recomend/products")
+    @GetMapping("/recommend/products")
     public String listRecommendedProducts(@RequestHeader(required = false, value = "Authorization") String authorization) throws IOException {
-        User user = jwtUtils.getUserByAuthorization(authorization);
-
-        return String.valueOf(recommendProductsService.callRecommendendApi(user.getId()));
+        return String.valueOf(recommendProductsService.callRecommendendApi(authorization));
     }
 
     @PutMapping("/products/{id}")
