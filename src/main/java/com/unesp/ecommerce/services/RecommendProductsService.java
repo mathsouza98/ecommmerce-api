@@ -27,10 +27,8 @@ public class RecommendProductsService {
         // API server address
         String url = "http://127.0.0.1:5000/";
 
-        if (jwtUtils.validateJwtToken(authorization)) {
-            user = jwtUtils.getUserByAuthorization(authorization);
-            userId = user.getId();
-        }
+        user = jwtUtils.getUserByAuthorization(authorization);
+        userId = user.getId();
 
         if (userId == null) {
             System.out.println("\n Requisição GET para a URL: " + url);
