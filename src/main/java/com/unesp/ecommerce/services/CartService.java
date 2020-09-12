@@ -24,8 +24,11 @@ public class CartService {
     @Autowired
     JwtUtils jwtUtils;
 
-    public Optional<Cart> getCart(String userId) {
-        Optional<Cart> cart = cartRepository.findByUserId(userId);
+    public Optional<Cart> getCart(String authorization) {
+        User user = jwtUtils.getUserByAuthorization(authorization);
+        Optional<Cart> cart = cartRepository.findByUserId(user.getId());
+
+        if(!cart.isPresent()) return null;
 
         return cart;
     }
@@ -33,17 +36,17 @@ public class CartService {
     public Product addProductOnCart(String productId, String authorization) {
         Cart newCart;
         List<Product> cartProductList = new ArrayList<Product>();
-        User user = jwtUtils.getUserByAuthorization(authorization);
 
-        Optional<Cart> cart = getCart(user.getId());
+        Optional<Cart> cart = getCart(authorization);
 
         Product product = productService.getProductById(productId)
             .orElseThrow(() -> new RuntimeException("Error: Product not found"));
 
         if (!cart.isPresent()) {
+            User user = jwtUtils.getUserByAuthorization(authorization);
             cartProductList.add(product);
             newCart = new Cart(user.getId(), product.getPrice(), cartProductList);
-            
+
             cartRepository.save(newCart);
 
             return product;
