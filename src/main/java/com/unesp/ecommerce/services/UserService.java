@@ -70,10 +70,17 @@ public class UserService {
     }
 
     public ResponseEntity<MessageResponse> signupPhysicalUser (SignupRequest signupRequest, Set<Role> roles) {
+        Contact contact = new Contact(
+                signupRequest.getHomePhone(),
+                signupRequest.getCommercialPhone(),
+                signupRequest.getCellPhone(),
+                signupRequest.getEmail()
+        );
 
         PhysicalUser physicalUser = new PhysicalUser(
             signupRequest.getUsername(),
             encoder.encode(signupRequest.getPassword()),
+            contact,
             signupRequest.getName(),
             signupRequest.getCpf_cnpj()
         );
@@ -86,10 +93,17 @@ public class UserService {
     }
 
     public ResponseEntity<MessageResponse> signupLegalUser (SignupRequest signupRequest, Set<Role> roles) {
+        Contact contact = new Contact(
+          signupRequest.getHomePhone(),
+          signupRequest.getCommercialPhone(),
+          signupRequest.getCellPhone(),
+          signupRequest.getEmail()
+        );
 
         LegalUser legalUser = new LegalUser(
             signupRequest.getUsername(),
             encoder.encode(signupRequest.getPassword()),
+            contact,
             signupRequest.getName(),
             signupRequest.getCpf_cnpj()
         );

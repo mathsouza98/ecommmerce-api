@@ -10,6 +10,10 @@ public class SignupRequest {
     private String password;
     private String userType;
     private String cpf_cnpj;
+    private String homePhone;
+    private String commercialPhone;
+    private String cellPhone;
+    private String email;
 
     public String getUsername() {
         return username;
@@ -57,5 +61,37 @@ public class SignupRequest {
 
     public void setUserType(String userType) {
         this.userType = userType;
+    }
+
+    public String getHomePhone() {
+        return homePhone;
+    }
+
+    public void setHomePhone(String homePhone) {
+        this.homePhone = homePhone;
+    }
+
+    public String getCommercialPhone() {
+        return commercialPhone;
+    }
+
+    public void setCommercialPhone(String commercialPhone) {
+        this.commercialPhone = commercialPhone;
+    }
+
+    public String getCellPhone() {
+        return cellPhone;
+    }
+
+    public void setCellPhone(String cellPhone) {
+        this.cellPhone = cellPhone;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }

@@ -32,9 +32,10 @@ public class User {
     @DBRef
     private Set<Role> roles = new HashSet<>();
 
-    public User(String username, String password, String name) {
+    public User(String username, String password, Contact contact, String name) {
         this.username = username;
         this.password = password;
+        this.contact = contact;
         this.name = name;
     }
 
