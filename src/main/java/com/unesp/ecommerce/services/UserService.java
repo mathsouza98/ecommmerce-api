@@ -12,10 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import java.util.HashSet;
-import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -40,30 +38,32 @@ public class UserService {
     JwtUtils jwtUtils;
 
     public ResponseEntity<MessageResponse> signupUser (SignupRequest signupRequest, Set<Role> roles) {
+        String _userType = signupRequest.getUserType();
+
         if (userRepository.existsByUsername(signupRequest.getUsername())) {
             return ResponseEntity
                     .badRequest()
                     .body(new MessageResponse("Error: Username is already taken!"));
         }
 
-        if ( signupRequest.getCpf() != null ) {
-            if(physicalUserRepository.existsByCpf(signupRequest.getCpf())) {
-                return ResponseEntity
-                        .badRequest()
-                        .body(new MessageResponse("Error: Cpf already taken!"));
-            } else {
-                return signupPhysicalUser(signupRequest, roles);
-            }
-        }
+        switch (_userType) {
+            case "fisica":
+                if(physicalUserRepository.existsByCpf(signupRequest.getCpf_cnpj())) {
+                    return ResponseEntity
+                            .badRequest()
+                            .body(new MessageResponse("Error: Cpf already taken!"));
+                }
 
-        if ( signupRequest.getCnpj() != null ) {
-            if(legalUserRepository.existsByCnpj(signupRequest.getCnpj())) {
-                return ResponseEntity
-                        .badRequest()
-                        .body(new MessageResponse("Error: Cnpj already taken!"));
-            } else {
+                return signupPhysicalUser(signupRequest, roles);
+
+            case "juridica":
+                if(legalUserRepository.existsByCnpj(signupRequest.getCpf_cnpj())) {
+                    return ResponseEntity
+                            .badRequest()
+                            .body(new MessageResponse("Error: Cnpj already taken!"));
+                }
+
                 return signupLegalUser(signupRequest, roles);
-            }
         }
 
         return ResponseEntity.badRequest().body(new MessageResponse("Error trying to register user!"));
@@ -75,7 +75,7 @@ public class UserService {
             signupRequest.getUsername(),
             encoder.encode(signupRequest.getPassword()),
             signupRequest.getName(),
-            signupRequest.getCpf()
+            signupRequest.getCpf_cnpj()
         );
 
         physicalUser.setRoles(roles);
@@ -91,7 +91,7 @@ public class UserService {
             signupRequest.getUsername(),
             encoder.encode(signupRequest.getPassword()),
             signupRequest.getName(),
-            signupRequest.getCnpj()
+            signupRequest.getCpf_cnpj()
         );
 
         legalUser.setRoles(roles);

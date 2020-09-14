@@ -8,9 +8,9 @@ public class SignupRequest {
     private String name;
     private Set<String> roles;
     private String password;
-    private String cpf;
-    private String cnpj;
-  
+    private String userType;
+    private String cpf_cnpj;
+
     public String getUsername() {
         return username;
     }
@@ -35,13 +35,13 @@ public class SignupRequest {
       this.roles = roles;
     }
 
-    public String getCpf() { return cpf; }
+    public String getCpf_cnpj() {
+        return cpf_cnpj;
+    }
 
-    public void setCpf(String cpf) { this.cpf = cpf; }
-
-    public String getCnpj() { return cnpj; }
-
-    public void setCnpj(String cnpj) { this.cnpj = cnpj; }
+    public void setCpf_cnpj(String cpf_cnpj) {
+        this.cpf_cnpj = cpf_cnpj;
+    }
 
     public String getName() {
         return name;
@@ -49,5 +49,13 @@ public class SignupRequest {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getUserType() {
+        return userType;
+    }
+
+    public void setUserType(String userType) {
+        this.userType = userType;
     }
 }
