@@ -28,8 +28,6 @@ public class CartService {
         User user = jwtUtils.getUserByAuthorization(authorization);
         Optional<Cart> cart = cartRepository.findByUserId(user.getId());
 
-        if(!cart.isPresent()) return null;
-
         return cart;
     }
 
@@ -118,9 +116,24 @@ public class CartService {
         cartRepository.save(cart);
     }
 
-    public void deleteProductsOnCart(String userId) {
+    public void deleteAllProductsOnCart(String userId) {
         Cart cart = getCart(userId)
                 .orElseThrow(() -> new RuntimeException("Error: Cart not found"));
         cart.setProductList(new ArrayList<Product>());
+    }
+
+    public void deleteProductOnCart(String authorization, String productId) {
+        Optional<Cart> cart = getCart(authorization);
+        Cart _cart = cart.get();
+        List<Product> cartProductsList = _cart.getProductList();
+
+        Product cartProduct  = cartProductsList.stream().filter(product -> product.getId().equals(productId)).findFirst()
+                .orElseThrow(() -> new RuntimeException("Error: Product not found on cart"));
+
+        cartProductsList.remove(cartProduct);
+        _cart.setProductList(cartProductsList);
+        _cart.setFinalPrice(_cart.getFinalPrice() - (cartProduct.getPrice() * cartProduct.getOrderQuantity()));
+
+        cartRepository.save(_cart);
     }
 }
