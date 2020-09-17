@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -27,6 +28,12 @@ public class CartController {
     @PostAuthorize("hasRole('MODERATOR') or hasRole('ADMIN') or hasRole('USER')")
     public Optional<Cart> listCartByAuthToken(@RequestHeader(value = "Authorization") String authorization) {
         return cartService.getCart(authorization);
+    }
+
+    @PostMapping("/cart-product/{productId}/{operator}")
+    @PostAuthorize("hasRole('MODERATOR') or hasRole('ADMIN') or hasRole('USER')")
+    public void handleIncDecCartProductEvent(@PathVariable String productId, @RequestHeader(value = "Authorization") String authorization, @PathVariable String operator) {
+        cartService.handleIncDec(authorization, productId, operator);
     }
 
     @DeleteMapping("/cart-product/{productId}")

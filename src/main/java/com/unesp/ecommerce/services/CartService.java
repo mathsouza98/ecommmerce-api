@@ -98,11 +98,13 @@ public class CartService {
 
         orderQuantity = cartProduct.getOrderQuantity();
 
-        cartProduct.setOrderQuantity(orderQuantity - 1);
-        cart.setProductList(cartProductsList);
-        cart.setFinalPrice(cartFinalPrice + cartProduct.getPrice());
+        if (orderQuantity > 1) {
+            cartProduct.setOrderQuantity(orderQuantity - 1);
+            cart.setProductList(cartProductsList);
+            cart.setFinalPrice(cartFinalPrice - cartProduct.getPrice());
 
-        cartRepository.save(cart);
+            cartRepository.save(cart);
+        }
     }
 
     public void appendProductOnCart(Cart cart, Product product) {
@@ -135,5 +137,17 @@ public class CartService {
         _cart.setFinalPrice(_cart.getFinalPrice() - (cartProduct.getPrice() * cartProduct.getOrderQuantity()));
 
         cartRepository.save(_cart);
+    }
+
+    public void handleIncDec(String authorization, String productId, String operator) {
+        Optional<Cart> cart = getCart(authorization);
+
+        if (operator.equals("increment")) {
+            incrementProductOrderQuantityOnCart(cart.get(), productId);
+        }
+
+        if (operator.equals("decrement")) {
+            decrementProductOrderQuantityOnCart(cart.get(), productId);
+        }
     }
 }
