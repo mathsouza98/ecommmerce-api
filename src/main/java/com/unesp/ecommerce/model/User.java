@@ -5,7 +5,6 @@ import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Document(collection = "users")
@@ -16,7 +15,6 @@ public class User {
     private String username;
     private String password;
     private String name;
-    private List<Address> addressList;
     private Contact contact;
 
     public String getId() {
@@ -67,14 +65,6 @@ public class User {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public List<Address> getAddressList() {
-        return addressList;
-    }
-
-    public void setAddressList(List<Address> addressList) {
-        this.addressList = addressList;
     }
 
     public Contact getContact() {

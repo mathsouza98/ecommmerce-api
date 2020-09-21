@@ -1,5 +1,8 @@
 package com.unesp.ecommerce.payload.request;
 
+import com.unesp.ecommerce.model.Address;
+import com.unesp.ecommerce.model.Contact;
+
 import java.util.Set;
  
 public class SignupRequest {
@@ -10,10 +13,8 @@ public class SignupRequest {
     private String password;
     private String userType;
     private String cpf_cnpj;
-    private String homePhone;
-    private String commercialPhone;
-    private String cellPhone;
-    private String email;
+    private Contact contact;
+    private Address address;
 
     public String getUsername() {
         return username;
@@ -63,35 +64,19 @@ public class SignupRequest {
         this.userType = userType;
     }
 
-    public String getHomePhone() {
-        return homePhone;
+    public Contact getContact() {
+        return contact;
     }
 
-    public void setHomePhone(String homePhone) {
-        this.homePhone = homePhone;
+    public void setContact(Contact contact) {
+        this.contact = contact;
     }
 
-    public String getCommercialPhone() {
-        return commercialPhone;
+    public Address getAddress() {
+        return address;
     }
 
-    public void setCommercialPhone(String commercialPhone) {
-        this.commercialPhone = commercialPhone;
-    }
-
-    public String getCellPhone() {
-        return cellPhone;
-    }
-
-    public void setCellPhone(String cellPhone) {
-        this.cellPhone = cellPhone;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
+    public void setAddress(Address address) {
+        this.address = address;
     }
 }

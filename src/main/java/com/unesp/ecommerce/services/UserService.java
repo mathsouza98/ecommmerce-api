@@ -3,10 +3,7 @@ package com.unesp.ecommerce.services;
 import com.unesp.ecommerce.model.*;
 import com.unesp.ecommerce.payload.request.SignupRequest;
 import com.unesp.ecommerce.payload.response.MessageResponse;
-import com.unesp.ecommerce.repository.LegalUserRepository;
-import com.unesp.ecommerce.repository.PhysicalUserRepository;
-import com.unesp.ecommerce.repository.RoleRepository;
-import com.unesp.ecommerce.repository.UserRepository;
+import com.unesp.ecommerce.repository.*;
 import com.unesp.ecommerce.security.jwt.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -30,6 +27,9 @@ public class UserService {
 
     @Autowired
     RoleRepository roleRepository;
+
+    @Autowired
+    AddressRepository addressRepository;
 
     @Autowired
     PasswordEncoder encoder;
@@ -71,10 +71,10 @@ public class UserService {
 
     public ResponseEntity<MessageResponse> signupPhysicalUser (SignupRequest signupRequest, Set<Role> roles) {
         Contact contact = new Contact(
-                signupRequest.getHomePhone(),
-                signupRequest.getCommercialPhone(),
-                signupRequest.getCellPhone(),
-                signupRequest.getEmail()
+                signupRequest.getContact().getHomePhone(),
+                signupRequest.getContact().getCommercialPhone(),
+                signupRequest.getContact().getCellPhone(),
+                signupRequest.getContact().getEmail()
         );
 
         PhysicalUser physicalUser = new PhysicalUser(
@@ -89,15 +89,27 @@ public class UserService {
 
         physicalUserRepository.save(physicalUser);
 
+        Address address = new Address(
+                physicalUser.getId(),
+                signupRequest.getAddress().getStreet(),
+                signupRequest.getAddress().getNumber(),
+                signupRequest.getAddress().getNeighborhood(),
+                signupRequest.getAddress().getZip(),
+                signupRequest.getAddress().getCity(),
+                signupRequest.getAddress().getFedUnit()
+        );
+
+        addressRepository.save(address);
+
         return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
     }
 
     public ResponseEntity<MessageResponse> signupLegalUser (SignupRequest signupRequest, Set<Role> roles) {
         Contact contact = new Contact(
-          signupRequest.getHomePhone(),
-          signupRequest.getCommercialPhone(),
-          signupRequest.getCellPhone(),
-          signupRequest.getEmail()
+            signupRequest.getContact().getHomePhone(),
+            signupRequest.getContact().getCommercialPhone(),
+            signupRequest.getContact().getCellPhone(),
+            signupRequest.getContact().getEmail()
         );
 
         LegalUser legalUser = new LegalUser(
@@ -111,6 +123,18 @@ public class UserService {
         legalUser.setRoles(roles);
 
         legalUserRepository.save(legalUser);
+
+        Address address = new Address(
+                legalUser.getId(),
+                signupRequest.getAddress().getStreet(),
+                signupRequest.getAddress().getNumber(),
+                signupRequest.getAddress().getNeighborhood(),
+                signupRequest.getAddress().getZip(),
+                signupRequest.getAddress().getCity(),
+                signupRequest.getAddress().getFedUnit()
+        );
+
+        addressRepository.save(address);
 
         return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
     }
