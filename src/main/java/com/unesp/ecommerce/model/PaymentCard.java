@@ -1,24 +1,35 @@
 package com.unesp.ecommerce.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Date;
 
 @Document
-public class Card {
+public class PaymentCard {
 
-    String number;
-    Date expDate;
-    String banner;
-    String holderName;
-    String secCode;
+    @Id
+    private String id;
+    private String userId;
+    private String number;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    private Date expDate;
+    private String banner;
+    private String holderName;
+    private String secCode;
 
-    public Card(String number, Date expDate, String banner, String holderName, String secCode) {
+    public PaymentCard(String userId, String number, Date expDate, String banner, String holderName, String secCode) {
+        this.userId = userId;
         this.number = number;
         this.expDate = expDate;
         this.banner = banner;
         this.holderName = holderName;
         this.secCode = secCode;
+    }
+
+    public String getId() {
+        return id;
     }
 
     public String getNumber() {

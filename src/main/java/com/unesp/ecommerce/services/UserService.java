@@ -3,19 +3,14 @@ package com.unesp.ecommerce.services;
 import com.unesp.ecommerce.model.*;
 import com.unesp.ecommerce.payload.request.SignupRequest;
 import com.unesp.ecommerce.payload.response.MessageResponse;
-import com.unesp.ecommerce.repository.LegalUserRepository;
-import com.unesp.ecommerce.repository.PhysicalUserRepository;
-import com.unesp.ecommerce.repository.RoleRepository;
-import com.unesp.ecommerce.repository.UserRepository;
+import com.unesp.ecommerce.repository.*;
 import com.unesp.ecommerce.security.jwt.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import java.util.HashSet;
-import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -34,69 +29,112 @@ public class UserService {
     RoleRepository roleRepository;
 
     @Autowired
+    AddressRepository addressRepository;
+
+    @Autowired
     PasswordEncoder encoder;
 
     @Autowired
     JwtUtils jwtUtils;
 
     public ResponseEntity<MessageResponse> signupUser (SignupRequest signupRequest, Set<Role> roles) {
+        String _userType = signupRequest.getUserType();
+
         if (userRepository.existsByUsername(signupRequest.getUsername())) {
             return ResponseEntity
                     .badRequest()
                     .body(new MessageResponse("Error: Username is already taken!"));
         }
 
-        if ( signupRequest.getCpf() != null ) {
-            if(physicalUserRepository.existsByCpf(signupRequest.getCpf())) {
-                return ResponseEntity
-                        .badRequest()
-                        .body(new MessageResponse("Error: Cpf already taken!"));
-            } else {
-                return signupPhysicalUser(signupRequest, roles);
-            }
-        }
+        switch (_userType) {
+            case "fisica":
+                if(physicalUserRepository.existsByCpf(signupRequest.getCpf_cnpj())) {
+                    return ResponseEntity
+                            .badRequest()
+                            .body(new MessageResponse("Error: Cpf already taken!"));
+                }
 
-        if ( signupRequest.getCnpj() != null ) {
-            if(legalUserRepository.existsByCnpj(signupRequest.getCnpj())) {
-                return ResponseEntity
-                        .badRequest()
-                        .body(new MessageResponse("Error: Cnpj already taken!"));
-            } else {
+                return signupPhysicalUser(signupRequest, roles);
+
+            case "juridica":
+                if(legalUserRepository.existsByCnpj(signupRequest.getCpf_cnpj())) {
+                    return ResponseEntity
+                            .badRequest()
+                            .body(new MessageResponse("Error: Cnpj already taken!"));
+                }
+
                 return signupLegalUser(signupRequest, roles);
-            }
         }
 
         return ResponseEntity.badRequest().body(new MessageResponse("Error trying to register user!"));
     }
 
     public ResponseEntity<MessageResponse> signupPhysicalUser (SignupRequest signupRequest, Set<Role> roles) {
+        Contact contact = new Contact(
+                signupRequest.getContact().getHomePhone(),
+                signupRequest.getContact().getCommercialPhone(),
+                signupRequest.getContact().getCellPhone(),
+                signupRequest.getContact().getEmail()
+        );
 
         PhysicalUser physicalUser = new PhysicalUser(
             signupRequest.getUsername(),
             encoder.encode(signupRequest.getPassword()),
+            contact,
             signupRequest.getName(),
-            signupRequest.getCpf()
+            signupRequest.getCpf_cnpj()
         );
 
         physicalUser.setRoles(roles);
 
         physicalUserRepository.save(physicalUser);
 
+        Address address = new Address(
+                physicalUser.getId(),
+                signupRequest.getAddress().getStreet(),
+                signupRequest.getAddress().getNumber(),
+                signupRequest.getAddress().getNeighborhood(),
+                signupRequest.getAddress().getZip(),
+                signupRequest.getAddress().getCity(),
+                signupRequest.getAddress().getFedUnit()
+        );
+
+        addressRepository.save(address);
+
         return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
     }
 
     public ResponseEntity<MessageResponse> signupLegalUser (SignupRequest signupRequest, Set<Role> roles) {
+        Contact contact = new Contact(
+            signupRequest.getContact().getHomePhone(),
+            signupRequest.getContact().getCommercialPhone(),
+            signupRequest.getContact().getCellPhone(),
+            signupRequest.getContact().getEmail()
+        );
 
         LegalUser legalUser = new LegalUser(
             signupRequest.getUsername(),
             encoder.encode(signupRequest.getPassword()),
+            contact,
             signupRequest.getName(),
-            signupRequest.getCnpj()
+            signupRequest.getCpf_cnpj()
         );
 
         legalUser.setRoles(roles);
 
         legalUserRepository.save(legalUser);
+
+        Address address = new Address(
+                legalUser.getId(),
+                signupRequest.getAddress().getStreet(),
+                signupRequest.getAddress().getNumber(),
+                signupRequest.getAddress().getNeighborhood(),
+                signupRequest.getAddress().getZip(),
+                signupRequest.getAddress().getCity(),
+                signupRequest.getAddress().getFedUnit()
+        );
+
+        addressRepository.save(address);
 
         return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
     }

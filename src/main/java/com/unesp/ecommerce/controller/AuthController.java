@@ -78,7 +78,7 @@ public class AuthController {
     }
 
     @PostMapping("/admin/signup")
-    //@PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> registerRoleBasedUser(@Valid @RequestBody SignupRequest signupRequest) {
         Set<Role> roles = userService.getSetOfRoleBySignupRequest(signupRequest);
 
