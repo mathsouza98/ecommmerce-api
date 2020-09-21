@@ -17,8 +17,6 @@ public class User {
     private String password;
     private String name;
     private List<Address> addressList;
-    private List<Card> cardList;
-    private Cart cart;
     private Contact contact;
 
     public String getId() {
@@ -77,22 +75,6 @@ public class User {
 
     public void setAddressList(List<Address> addressList) {
         this.addressList = addressList;
-    }
-
-    public List<Card> getCardList() {
-        return cardList;
-    }
-
-    public void setCardList(List<Card> cardList) {
-        this.cardList = cardList;
-    }
-
-    public Cart getCart() {
-        return cart;
-    }
-
-    public void setCart(Cart cart) {
-        this.cart = cart;
     }
 
     public Contact getContact() {
