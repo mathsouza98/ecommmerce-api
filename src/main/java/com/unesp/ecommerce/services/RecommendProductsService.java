@@ -22,16 +22,13 @@ public class RecommendProductsService {
 
     public StringBuffer callRecommendendApi(String authorization) throws IOException {
         User user;
-        String userId = null;
+        System.out.println("\nJWT Token: "+authorization);
 
         // API server address
         String url = "http://127.0.0.1:5000/";
 
-        user = jwtUtils.getUserByAuthorization(authorization);
-        userId = user.getId();
-
-        if (userId == null) {
-            System.out.println("\n Requisição GET para a URL: " + url);
+        if (authorization == null) {
+            System.out.println("Requisição GET para a URL: " + url);
 
             // Instantiating URL object and establishing connection
             URL obj = new URL(url);
@@ -54,7 +51,10 @@ public class RecommendProductsService {
             return response;
         }
         else {
-            System.out.println("\n Requisição GET para a URL: " + url + userId);
+            user = jwtUtils.getUserByAuthorization(authorization);
+            String userId = user.getId();
+
+            System.out.println("Requisição GET para a URL: " + url + userId);
 
             // Instantiating URL object for passed userId and establishing connection
             URL obj = new URL(url + userId);
