@@ -21,60 +21,36 @@ public class RecommendProductsService {
     JwtUtils jwtUtils;
 
     public StringBuffer callRecommendendApi(String authorization) throws IOException {
-        User user;
+        String url = "http://127.0.0.1:5000/";   // API server address
+        User user = jwtUtils.getUserByAuthorization(authorization);
+        URL obj;
         System.out.println("\nJWT Token: "+authorization);
 
-        // API server address
-        String url = "http://127.0.0.1:5000/";
 
-        if (authorization == null) {
+        // Instantiating URL object for passed userId and establishing connection
+        if (user != null) {
+            obj = new URL(url + user.getId());
+            System.out.println("Requisição GET para a URL: " + url + user.getId());
+        } else {
+            obj = new URL(url);
             System.out.println("Requisição GET para a URL: " + url);
-
-            // Instantiating URL object and establishing connection
-            URL obj = new URL(url);
-            HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-
-            // GET request for local server
-            BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-            StringBuffer response = new StringBuffer();
-
-            // Getting server response
-            String inputLine;
-            while ((inputLine = in.readLine()) != null) {
-                response.append(inputLine);
-            }
-            in.close();
-
-            // Shows recommended products on screen
-            System.out.println(response.toString());
-
-            return response;
         }
-        else {
-            user = jwtUtils.getUserByAuthorization(authorization);
-            String userId = user.getId();
+        HttpURLConnection con = (HttpURLConnection) obj.openConnection();
 
-            System.out.println("Requisição GET para a URL: " + url + userId);
+        // GET request for local server
+        BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+        StringBuffer response = new StringBuffer();
 
-            // Instantiating URL object for passed userId and establishing connection
-            URL obj = new URL(url + userId);
-            HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-
-            // GET request for local server
-            BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-            StringBuffer response = new StringBuffer();
-
-            // Getting server response
-            String inputLine;
-            while ((inputLine = in.readLine()) != null) {
-                response.append(inputLine);
-            }
-            in.close();
-
-            // Shows recommended products on screen
-            System.out.println(response.toString());
-
-            return response;
+        // Getting server response
+        String inputLine;
+        while ((inputLine = in.readLine()) != null) {
+            response.append(inputLine);
         }
+        in.close();
+
+        // Shows recommended products on screen
+        System.out.println(response.toString());
+
+        return response;
     }
 }
