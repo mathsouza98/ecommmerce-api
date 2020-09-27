@@ -8,13 +8,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
-import java.util.List;
 
 @Service
 public class OrderService {
 
     @Autowired
     JwtUtils jwtUtils;
+
+    @Autowired
+    CartService cartService;
 
     @Autowired
     AddressRepository addressRepository;
@@ -62,12 +64,14 @@ public class OrderService {
 
         Bill newBill = new Bill(
           newOrder.getId(),
-          "credit card",
+          "cartão de crédito",
            orderRequest.getInstallmentNumber(),
            "executed"
         );
 
         billRepository.save(newBill);
+
+        cartService.deleteAllProductsOnCart(user.getId());
 
         return newOrder.getId();
     }
