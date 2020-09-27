@@ -18,10 +18,10 @@ public class OrderController {
     @Autowired
     OrderService orderService;
 
-    @GetMapping("/orders")
+    @GetMapping("/orders/{orderId}")
     @PostAuthorize("hasRole('MODERATOR') or hasRole('ADMIN') or hasRole('USER')")
-    public List<Order> listOrderByAuthToken(@RequestHeader(value = "Authorization") String authorization) {
-        return orderService.listOrder(authorization);
+    public Order listOrderById(@PathVariable (value = "orderId") String orderId) {
+        return orderService.listOrder(orderId);
     }
 
     @PostMapping("/orders")

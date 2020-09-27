@@ -7,6 +7,7 @@ import com.unesp.ecommerce.security.jwt.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -30,10 +31,11 @@ public class OrderService {
     @Autowired
     BillRepository billRepository;
 
-    public List<Order> listOrder(String authorization) {
-        User user = jwtUtils.getUserByAuthorization(authorization);
+    public Order listOrder(String orderId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("Error: Order not found"));
 
-        return orderRepository.findAllByUserId(user.getId());
+        return order;
     }
 
     public String saveOrder(OrderRequest orderRequest, String authorization) {
@@ -44,6 +46,10 @@ public class OrderService {
                 .orElseThrow(() -> new RuntimeException("Error: Address not found"));
         PaymentCard paymentCard = paymentCardRepository.findById(orderRequest.getPaymentCardId())
                 .orElseThrow(() -> new RuntimeException("Error: Payment card not found"));
+
+        cart.setCloseDate(new Date());
+
+        cartRepository.save(cart);
 
         Order newOrder = new Order(
           user.getId(),
