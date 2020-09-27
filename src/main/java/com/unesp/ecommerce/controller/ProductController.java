@@ -59,6 +59,7 @@ public class ProductController {
     }
 
     @DeleteMapping("/products/{id}")
+    @PostAuthorize("hasRole('MODERATOR') or hasRole('ADMIN')")
     public boolean deleteProduct(@PathVariable String id) {
         return productService.deleteProduct(id);
     }
