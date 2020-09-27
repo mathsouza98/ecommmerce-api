@@ -10,10 +10,10 @@ public class Bill {
     String id;
     String orderId;
     String paymentForm;
-    String installmentNumber;
+    long installmentNumber;
     String status;
 
-    public Bill(String orderId, String paymentForm, String installmentNumber, String status) {
+    public Bill(String orderId, String paymentForm, long installmentNumber, String status) {
         this.orderId = orderId;
         this.paymentForm = paymentForm;
         this.installmentNumber = installmentNumber;
@@ -36,11 +36,11 @@ public class Bill {
         this.paymentForm = paymentForm;
     }
 
-    public String getInstallmentNumber() {
+    public long getInstallmentNumber() {
         return installmentNumber;
     }
 
-    public void setInstallmentNumber(String installmentNumber) {
+    public void setInstallmentNumber(long installmentNumber) {
         this.installmentNumber = installmentNumber;
     }
 

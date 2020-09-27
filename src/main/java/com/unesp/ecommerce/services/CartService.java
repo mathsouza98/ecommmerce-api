@@ -119,9 +119,12 @@ public class CartService {
     }
 
     public void deleteAllProductsOnCart(String userId) {
-        Cart cart = getCart(userId)
+        Cart cart = cartRepository.findByUserId(userId)
                 .orElseThrow(() -> new RuntimeException("Error: Cart not found"));
         cart.setProductList(new ArrayList<Product>());
+        cart.setFinalPrice(0);
+
+        cartRepository.save(cart);
     }
 
     public void deleteProductOnCart(String authorization, String productId) {
