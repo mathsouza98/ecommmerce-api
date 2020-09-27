@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 
 @Service
 public class OrderService {
@@ -23,6 +24,9 @@ public class OrderService {
 
     @Autowired
     PaymentCardRepository paymentCardRepository;
+
+    @Autowired
+    ProductRepository productRepository;
 
     @Autowired
     CartRepository cartRepository;
@@ -48,6 +52,8 @@ public class OrderService {
                 .orElseThrow(() -> new RuntimeException("Error: Address not found"));
         PaymentCard paymentCard = paymentCardRepository.findById(orderRequest.getPaymentCardId())
                 .orElseThrow(() -> new RuntimeException("Error: Payment card not found"));
+
+        if (!tryOrder(cart.getProductList())) return "500";
 
         cart.setCloseDate(new Date());
 
@@ -78,5 +84,17 @@ public class OrderService {
 
     public Bill listBillByOrderId(String id) {
         return billRepository.findByOrderId(id);
+    }
+
+    public boolean tryOrder(List<Product> orderProductList) {
+
+        for (Product product : orderProductList) {
+            if (product.getOrderQuantity() > product.getStockQuantity()) return false;
+
+            product.setStockQuantity(product.getStockQuantity() - product.getOrderQuantity());
+            productRepository.save(product);
+        }
+
+        return true;
     }
 }
