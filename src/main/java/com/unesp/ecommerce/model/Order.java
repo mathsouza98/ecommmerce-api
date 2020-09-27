@@ -7,23 +7,21 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class Order {
 
     @Id
-    String id;
-    String userId;
-    String cartId;
-    String payment;
+    private String id;
+    private String userId;
+    private Address address;
+    private PaymentCard paymentCard;
+    private Cart cart;
 
-    public Order(String userId, String cartId, String payment) {
+    public Order(String userId, Address address, PaymentCard paymentCard, Cart cart) {
         this.userId = userId;
-        this.cartId = cartId;
-        this.payment = payment;
+        this.address = address;
+        this.paymentCard = paymentCard;
+        this.cart = cart;
     }
 
     public String getId() {
         return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     public String getUserId() {
@@ -34,19 +32,27 @@ public class Order {
         this.userId = userId;
     }
 
-    public String getCartId() {
-        return cartId;
+    public Address getAddress() {
+        return address;
     }
 
-    public void setCartId(String cartId) {
-        this.cartId = cartId;
+    public void setAddress(Address address) {
+        this.address = address;
     }
 
-    public String getPayment() {
-        return payment;
+    public PaymentCard getPaymentCard() {
+        return paymentCard;
     }
 
-    public void setPayment(String payment) {
-        this.payment = payment;
+    public void setPaymentCard(PaymentCard paymentCard) {
+        this.paymentCard = paymentCard;
+    }
+
+    public Cart getCart() {
+        return cart;
+    }
+
+    public void setCart(Cart cart) {
+        this.cart = cart;
     }
 }
