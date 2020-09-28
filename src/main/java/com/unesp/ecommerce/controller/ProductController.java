@@ -6,6 +6,7 @@ import com.unesp.ecommerce.services.RecommendProductsService;
 import com.unesp.ecommerce.services.UserHistoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -27,7 +28,7 @@ public class ProductController {
     private RecommendProductsService recommendProductsService;
 
     @PostMapping("/products")
-    @PostAuthorize("hasRole('MODERATOR') or hasRole('ADMIN')")
+    @PreAuthorize("hasRole('MODERATOR') or hasRole('ADMIN')")
     public Product insertProduct(@RequestBody Product productToBeInserted) {
         return productService.saveProduct(productToBeInserted);
     }
@@ -53,13 +54,13 @@ public class ProductController {
     }
 
     @PutMapping("/products/{id}")
-    @PostAuthorize("hasRole('MODERATOR') or hasRole('ADMIN')")
+    @PreAuthorize("hasRole('MODERATOR') or hasRole('ADMIN')")
     public Product updateProduct(@PathVariable String id, @RequestBody Product product) {
         return productService.updateProduct(id, product);
     }
 
     @DeleteMapping("/products/{id}")
-    @PostAuthorize("hasRole('MODERATOR') or hasRole('ADMIN')")
+    @PreAuthorize("hasRole('MODERATOR') or hasRole('ADMIN')")
     public boolean deleteProduct(@PathVariable String id) {
         return productService.deleteProduct(id);
     }

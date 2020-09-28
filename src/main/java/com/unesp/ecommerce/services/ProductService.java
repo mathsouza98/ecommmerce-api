@@ -37,7 +37,6 @@ public class ProductService {
         _product.setPrice(product.getPrice());
         _product.setBrand(product.getBrand());
         _product.setStockQuantity(product.getStockQuantity());
-        _product.setImagePathUrl(product.getImagePathUrl());
         _product.setOrderQuantity(product.getOrderQuantity());
 
         return productRepository.save(_product);

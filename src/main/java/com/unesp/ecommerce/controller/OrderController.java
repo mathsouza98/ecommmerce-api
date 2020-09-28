@@ -6,6 +6,7 @@ import com.unesp.ecommerce.payload.request.OrderRequest;
 import com.unesp.ecommerce.services.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,19 +20,19 @@ public class OrderController {
     OrderService orderService;
 
     @GetMapping("/orders/{orderId}")
-    @PostAuthorize("hasRole('MODERATOR') or hasRole('ADMIN') or hasRole('USER')")
+    @PreAuthorize("hasRole('MODERATOR') or hasRole('ADMIN') or hasRole('USER')")
     public Order listOrderById(@PathVariable (value = "orderId") String orderId) {
         return orderService.listOrder(orderId);
     }
 
     @PostMapping("/orders")
-    @PostAuthorize("hasRole('MODERATOR') or hasRole('ADMIN') or hasRole('USER')")
+    @PreAuthorize("hasRole('MODERATOR') or hasRole('ADMIN') or hasRole('USER')")
     public String requestOrder(@RequestBody OrderRequest orderRequest, @RequestHeader(value = "Authorization") String authorization) {
         return orderService.saveOrder(orderRequest, authorization);
     }
 
     @GetMapping("/bill/{id}")
-    @PostAuthorize("hasRole('MODERATOR') or hasRole('ADMIN') or hasRole('USER')")
+    @PreAuthorize("hasRole('MODERATOR') or hasRole('ADMIN') or hasRole('USER')")
     public Bill listBillsByOrderId(@PathVariable(value = "id") String id) {
         return orderService.listBillByOrderId(id);
     }
