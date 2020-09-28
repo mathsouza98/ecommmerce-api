@@ -16,15 +16,13 @@ public class Product {
     long stockQuantity;
     long orderQuantity;
     long totalVisualization;
-    String imagePathUrl;
 
-    public Product(String name, String category, float price, String brand, long stockQuantity, String imagePathUrl) {
+    public Product(String name, String category, float price, String brand, long stockQuantity) {
         this.name = name;
         this.category = category;
         this.price = price;
         this.brand = brand;
         this.stockQuantity = stockQuantity;
-        this.imagePathUrl = imagePathUrl;
         this.orderQuantity = 1;
         this.totalVisualization = 0;
     }
@@ -79,14 +77,6 @@ public class Product {
 
     public void setPrice(float price) {
         this.price = price;
-    }
-
-    public String getImagePathUrl() {
-        return imagePathUrl;
-    }
-
-    public void setImagePathUrl(String imagePathUrl) {
-        this.imagePathUrl = imagePathUrl;
     }
 
     public long getOrderQuantity() {

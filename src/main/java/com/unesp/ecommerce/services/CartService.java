@@ -98,11 +98,13 @@ public class CartService {
 
         orderQuantity = cartProduct.getOrderQuantity();
 
-        cartProduct.setOrderQuantity(orderQuantity - 1);
-        cart.setProductList(cartProductsList);
-        cart.setFinalPrice(cartFinalPrice + cartProduct.getPrice());
+        if (orderQuantity > 1) {
+            cartProduct.setOrderQuantity(orderQuantity - 1);
+            cart.setProductList(cartProductsList);
+            cart.setFinalPrice(cartFinalPrice - cartProduct.getPrice());
 
-        cartRepository.save(cart);
+            cartRepository.save(cart);
+        }
     }
 
     public void appendProductOnCart(Cart cart, Product product) {
@@ -117,9 +119,12 @@ public class CartService {
     }
 
     public void deleteAllProductsOnCart(String userId) {
-        Cart cart = getCart(userId)
+        Cart cart = cartRepository.findByUserId(userId)
                 .orElseThrow(() -> new RuntimeException("Error: Cart not found"));
         cart.setProductList(new ArrayList<Product>());
+        cart.setFinalPrice(0);
+
+        cartRepository.save(cart);
     }
 
     public void deleteProductOnCart(String authorization, String productId) {
@@ -135,5 +140,17 @@ public class CartService {
         _cart.setFinalPrice(_cart.getFinalPrice() - (cartProduct.getPrice() * cartProduct.getOrderQuantity()));
 
         cartRepository.save(_cart);
+    }
+
+    public void handleIncDec(String authorization, String productId, String operator) {
+        Optional<Cart> cart = getCart(authorization);
+
+        if (operator.equals("increment")) {
+            incrementProductOrderQuantityOnCart(cart.get(), productId);
+        }
+
+        if (operator.equals("decrement")) {
+            decrementProductOrderQuantityOnCart(cart.get(), productId);
+        }
     }
 }

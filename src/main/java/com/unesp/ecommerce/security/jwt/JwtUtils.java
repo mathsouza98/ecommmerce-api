@@ -68,6 +68,8 @@ public class JwtUtils {
     public User getUserByAuthorization(String authorization) {
         String username;
 
+        if (authorization == null) return null;
+
         if (!authorization.startsWith(tokenPrefix)) return null;
 
         String jwtToken = authorization.substring(7);
